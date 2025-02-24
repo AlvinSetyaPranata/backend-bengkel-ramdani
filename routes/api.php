@@ -34,7 +34,7 @@ Route::prefix('admin')->group(function () {
         Route::get('users', [AdminAuthController::class, 'listUsers']);
         Route::get('users/search', [AdminAuthController::class, 'searchUsers']);
         Route::get('users/{id}', [AdminAuthController::class, 'getUser']);
-        Route::put('users/{id}', [AdminAuthController::class, 'updateUser']);
+        Route::post('users/{id}', [AdminAuthController::class, 'updateUser']);
         Route::delete('users/{id}', [AdminAuthController::class, 'deleteUser']);
     });
 });

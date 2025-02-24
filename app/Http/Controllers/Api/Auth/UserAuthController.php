@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -12,59 +13,71 @@ use Illuminate\Validation\ValidationException;
 
 class UserAuthController extends Controller
 {
+    use ApiResponse;
+
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:8',
+            ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password,
-        ]);
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password), // Hash password
+            ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+            return $this->successResponse([
+                'user' => $user,
+            ], 'Pendaftaran berhasil', 201);
 
-        return response()->json([
-            'message' => 'Pendaftaran berhasil',
-            'user' => $user,
-        ], 201);
+        } catch (ValidationException $e) {
+            return $this->errorResponse('Validasi gagal', $e->errors(), 422);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Gagal melakukan pendaftaran', null, 500);
+        }
     }
 
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
-
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['Kredensial yang diberikan salah.'],
+        try {
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required|string',
             ]);
+
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user || !Hash::check($request->password, $user->password)) {
+                return $this->errorResponse('Kredensial yang diberikan salah', null, 401);
+            }
+
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return $this->successResponse([
+                'user' => $user,
+                'token' => $token
+            ], 'Masuk berhasil');
+
+        } catch (ValidationException $e) {
+            return $this->errorResponse('Validasi gagal', $e->errors(), 422);
         }
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'message' => 'Masuk berhasil',
-            'user' => $user,
-            'token' => $token,
-        ]);
+        // catch (\Exception $e) {
+        //     return $this->errorResponse('Gagal melakukan login', null, 500);
+        // }
     }
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
-
-        return response()->json([
-            'message' => 'Keluar berhasil'
-        ]);
+        try {
+            $request->user()->currentAccessToken()->delete();
+            return $this->successResponse(null, 'Keluar berhasil');
+        } catch (\Exception $e) {
+            return $this->errorResponse('Gagal melakukan logout', null, 500);
+        }
     }
 
     public function updateProfile(Request $request)
@@ -73,61 +86,34 @@ class UserAuthController extends Controller
             $request->validate([
                 'name' => 'nullable|string|max:255',
                 'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'plat_nomor' => 'nullable|string|max:15',
+                'status' => 'nullable|in:active,inactive'
             ]);
 
             $user = Auth::user();
 
             if (!$user) {
-                return response()->json(['message' => 'Unauthorized'], 401);
+                return $this->errorResponse('Tidak terautentikasi', null, 401);
             }
 
             if ($request->hasFile('avatar')) {
-                try {
-                    if ($user->avatar) {
-                        Storage::disk('public')->delete($user->avatar);
-                    }
-
-                    $avatarPath = $request->file('avatar')->store('avatars', 'public');
-                    $user->avatar = $avatarPath;
-                } catch (\Exception $e) {
-                    return response()->json([
-                        'message' => 'Gagal mengunggah avatar',
-                        'error' => $e->getMessage()
-                    ], 500);
+                if ($user->avatar) {
+                    Storage::disk('public')->delete($user->avatar);
                 }
+                $avatarPath = $request->file('avatar')->store('avatars', 'public');
+                $user->avatar = $avatarPath;
             }
 
-            if ($request->filled('name')) {
-                $user->name = $request->name;
-            }
-
-            if ($request->filled('plat_nomor')) {
-                $user->plat_nomor = $request->plat_nomor;
-            }
-
+            $user->fill($request->only(['name', 'status']));
             $user->save();
 
             $userData = $user->toArray();
-            if ($userData['avatar']) {
-                $userData['avatar'] = url('storage/' . $userData['avatar']);
-            }
 
-            return response()->json([
-                'message' => 'Profil berhasil diperbarui',
-                'user' => $userData,
-            ]);
+            return $this->successResponse($userData, 'Profil berhasil diperbarui');
 
         } catch (ValidationException $e) {
-            return response()->json([
-                'message' => 'Validasi gagal',
-                'errors' => $e->errors()
-            ], 422);
+            return $this->errorResponse('Validasi gagal', $e->errors(), 422);
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Gagal memperbarui profil',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->errorResponse('Gagal memperbarui profil', null, 500);
         }
     }
 
@@ -135,27 +121,15 @@ class UserAuthController extends Controller
     {
         try {
             $user = $request->user();
-            
+
             if (!$user) {
-                return response()->json(['message' => 'Unauthorized'], 401);
+                return $this->errorResponse('Tidak terautentikasi', null, 401);
             }
 
-            $userData = $user->toArray();
-            
-            if ($userData['avatar']) {
-                $userData['avatar'] = url('storage/' . $userData['avatar']);
-            }
-            
-            return response()->json([
-                'status' => 'berhasil mendapatkan profil',
-                'user' => $userData
-            ]);
-            
+            return $this->successResponse($user, 'Berhasil mendapatkan profil');
+
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Gagal mengambil profil',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->errorResponse('Gagal mengambil profil', null, 500);
         }
     }
 }

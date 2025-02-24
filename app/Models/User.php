@@ -3,14 +3,17 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, Notifiable;
+    use HasApiTokens, Notifiable,HasUuids;
 
     /**
      * The attributes that are mass assignable.
@@ -21,7 +24,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'plat_nomor',
         'avatar',
         'status',
     ];
@@ -47,5 +49,18 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function kendaraan(): HasMany
+    {
+        return $this->hasMany(Kendaraan::class, 'user_id', 'id');
+    }
+    public function pembayaran(): HasMany
+    {
+        return $this->hasMany(Pembayaran::class, 'user_id', 'id');
+    }
+    public function getAvatarAttribute($value)
+    {
+        return $value ? asset('storage/' . $value) : null;
     }
 }

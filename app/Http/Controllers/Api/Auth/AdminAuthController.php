@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\User;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -12,93 +13,109 @@ use Illuminate\Validation\ValidationException;
 
 class AdminAuthController extends Controller
 {
+    use ApiResponse;
+
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:admins',
-            'password' => 'required|string|min:8',
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:admins',
+                'password' => 'required|string|min:8',
+            ]);
 
-        $admin = Admin::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'admin',
-        ]);
+            $admin = Admin::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => 'admin',
+            ]);
 
-        return response()->json([
-            'message' => 'Pendaftaran berhasil',
-            'admin' => $admin,
-        ], 201);
+            return $this->successResponse($admin, 'Pendaftaran berhasil', 201);
+        } catch (ValidationException $e) {
+            return $this->errorResponse('Validasi gagal', $e->errors(), 422);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Gagal mendaftarkan admin', null, 500);
+        }
     }
 
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
-
-        $admin = Admin::where('email', $request->email)->first();
-
-        if (!$admin || !Hash::check($request->password, $admin->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['Kredensial yang diberikan salah.'],
+        try {
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required|string',
             ]);
+
+            $admin = Admin::where('email', $request->email)->first();
+
+            if (!$admin || !Hash::check($request->password, $admin->password)) {
+                return $this->errorResponse('Kredensial yang diberikan salah', null, 401);
+            }
+
+            $token = $admin->createToken('auth_token')->plainTextToken;
+
+            return $this->successResponse([
+                'admin' => $admin,
+                'token' => $token
+            ], 'Masuk berhasil');
+        } catch (ValidationException $e) {
+            return $this->errorResponse('Validasi gagal', $e->errors(), 422);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Gagal masuk', null, 500);
         }
-
-        $token = $admin->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'message' => 'Masuk berhasil',
-            'admin' => $admin,
-            'token' => $token,
-        ]);
     }
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
-
-        return response()->json([
-            'message' => 'Keluar berhasil'
-        ]);
+        try {
+            $request->user()->currentAccessToken()->delete();
+            return $this->successResponse(null, 'Keluar berhasil');
+        } catch (\Exception $e) {
+            return $this->errorResponse('Gagal keluar', null, 500);
+        }
     }
 
     public function profile(Request $request)
     {
-        return response()->json($request->user());
+        try {
+            return $this->successResponse($request->user());
+        } catch (\Exception $e) {
+            return $this->errorResponse('Gagal mengambil profil', null, 500);
+        }
     }
 
     public function listAdmins()
     {
-        return response()->json(Admin::where('role', 'admin')->get());
+        try {
+            $admins = Admin::where('role', 'admin')->get();
+            return $this->successResponse($admins, 'Daftar admin berhasil diambil');
+        } catch (\Exception $e) {
+            return $this->errorResponse('Gagal mengambil daftar admin', null, 500);
+        }
     }
 
     public function deleteAdmin(Admin $admin)
     {
-        if ($admin->isSuperAdmin()) {
-            return response()->json(['message' => 'Tidak dapat menghapus admin super'], 403);
-        }
+        try {
+            if ($admin->isSuperAdmin()) {
+                return $this->errorResponse('Tidak dapat menghapus admin super', null, 403);
+            }
 
-        $admin->delete();
-        return response()->json(['message' => 'Admin berhasil dihapus']);
+            $admin->delete();
+            return $this->successResponse(null, 'Admin berhasil dihapus');
+        } catch (\Exception $e) {
+            return $this->errorResponse('Gagal menghapus admin', null, 500);
+        }
     }
 
     public function listUsers()
     {
         try {
-            $users = User::all();
-            return response()->json([
-                'status' => 'semua pengguna berhasil didapatkan',
-                'users' => $users
-            ]);
+            $users = User::paginate(10);
+            return $this->paginationResponse($users, 'Daftar pengguna berhasil diambil');
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Gagal mengambil daftar pengguna',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->errorResponse('Gagal mengambil daftar pengguna', null, 500);
         }
     }
 
@@ -106,21 +123,9 @@ class AdminAuthController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-            
-            $userData = $user->toArray();
-            if ($userData['avatar']) {
-                $userData['avatar'] = url('storage/' . $userData['avatar']);
-            }
-
-            return response()->json([
-                'status' => 'success',
-                'user' => $userData
-            ]);
+            return $this->successResponse($user, 'Data pengguna berhasil diambil');
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Pengguna tidak ditemukan',
-                'error' => $e->getMessage()
-            ], 404);
+            return $this->errorResponse('Pengguna tidak ditemukan', null, 404);
         }
     }
 
@@ -132,39 +137,26 @@ class AdminAuthController extends Controller
             $request->validate([
                 'name' => 'nullable|string|max:255',
                 'email' => 'nullable|email|unique:users,email,' . $user->id,
-                'plat_nomor' => 'nullable|string|max:15',
+                'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'status' => 'nullable|in:active,inactive'
             ]);
 
-            if ($request->filled('name')) {
-                $user->name = $request->name;
+            if ($request->hasFile('avatar')) {
+                if ($user->avatar) {
+                    Storage::disk('public')->delete($user->avatar);
+                }
+                $avatarPath = $request->file('avatar')->store('avatars', 'public');
+                $user->avatar = $avatarPath;
             }
-            if ($request->filled('email')) {
-                $user->email = $request->email;
-            }
-            if ($request->filled('plat_nomor')) {
-                $user->plat_nomor = $request->plat_nomor;
-            }
-            if ($request->filled('status')) {
-                $user->status = $request->status;
-            }
-
+    
+            $user->fill($request->only(['name', 'email', 'status']));
             $user->save();
-
-            return response()->json([
-                'message' => 'Data pengguna berhasil diperbarui',
-                'user' => $user
-            ]);
+            
+            return $this->successResponse($user, 'Data pengguna berhasil diperbarui');
         } catch (ValidationException $e) {
-            return response()->json([
-                'message' => 'Validasi gagal',
-                'errors' => $e->errors()
-            ], 422);
+            return $this->errorResponse('Validasi gagal', $e->errors(), 422);
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Gagal memperbarui data pengguna',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->errorResponse('Gagal memperbarui data pengguna', null, 500);
         }
     }
 
@@ -172,21 +164,10 @@ class AdminAuthController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-            
-            if ($user->avatar) {
-                Storage::disk('public')->delete($user->avatar);
-            }
-            
             $user->delete();
-
-            return response()->json([
-                'message' => 'Pengguna berhasil dihapus'
-            ]);
+            return $this->successResponse(null, 'Pengguna berhasil dihapus');
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Gagal menghapus pengguna',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->errorResponse('Gagal menghapus pengguna', null, 500);
         }
     }
 
@@ -195,30 +176,17 @@ class AdminAuthController extends Controller
         try {
             $query = User::query();
 
-            if ($request->has('name')) {
-                $query->where('name', 'like', '%' . $request->name . '%');
-            }
-            if ($request->has('email')) {
-                $query->where('email', 'like', '%' . $request->email . '%');
-            }
-            if ($request->has('plat_nomor')) {
-                $query->where('plat_nomor', 'like', '%' . $request->plat_nomor . '%');
-            }
-            if ($request->has('status')) {
-                $query->where('status', $request->status);
+            $searchFields = ['name', 'email', 'status'];
+            foreach ($searchFields as $field) {
+                if ($request->has($field)) {
+                    $query->where($field, 'like', '%' . $request->input($field) . '%');
+                }
             }
 
-            $users = $query->get();
-
-            return response()->json([
-                'status' => 'success',
-                'users' => $users
-            ]);
+            $users = $query->paginate(10);
+            return $this->paginationResponse($users, 'Pencarian pengguna berhasil');
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Gagal mencari pengguna',
-                'error' => $e->getMessage()
-            ], 500);
+            return $this->errorResponse('Gagal mencari pengguna', null, 500);
         }
     }
 }
