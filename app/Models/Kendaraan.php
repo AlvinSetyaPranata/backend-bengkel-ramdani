@@ -17,6 +17,7 @@ class Kendaraan extends Model
         'user_id',
         'nama_kendaraan',
         'plat_nomor',
+        'gambar_kendaraan',
         'tahun_produksi',
         'warna',
     ];
@@ -24,5 +25,9 @@ class Kendaraan extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+    public function getGambarKendaraanAttribute($value)
+    {
+        return $value ? asset('storage/' . $value) : null;
     }
 }

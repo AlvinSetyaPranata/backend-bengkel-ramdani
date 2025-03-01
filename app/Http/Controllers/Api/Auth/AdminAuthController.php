@@ -112,7 +112,7 @@ class AdminAuthController extends Controller
     public function listUsers()
     {
         try {
-            $users = User::paginate(10);
+            $users = User::with(['kendaraan','pembayaran'])->paginate(10);
             return $this->paginationResponse($users, 'Daftar pengguna berhasil diambil');
         } catch (\Exception $e) {
             return $this->errorResponse('Gagal mengambil daftar pengguna', null, 500);
@@ -122,7 +122,7 @@ class AdminAuthController extends Controller
     public function getUser($id)
     {
         try {
-            $user = User::findOrFail($id);
+            $user = User::with(['kendaraan','pembayaran'])->findOrFail($id);
             return $this->successResponse($user, 'Data pengguna berhasil diambil');
         } catch (\Exception $e) {
             return $this->errorResponse('Pengguna tidak ditemukan', null, 404);

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('tanggal_perbaikan')->nullable();
             $table->date('tanggal_selesai')->nullable();
             $table->decimal('total_biaya', 12, 2);
+            $table->string('keterangan')->nullable();
             $table->enum('status', ['menunggu', 'proses', 'selesai', 'batal'])->default('menunggu');
             $table->timestamps();
 

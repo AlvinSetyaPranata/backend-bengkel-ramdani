@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Api\Auth\UserAuthController;
 use App\Http\Controllers\Api\Auth\AdminAuthController;
-use App\Http\Controllers\Api\LabelController;
+use App\Http\Controllers\KendaraanController;
+use App\Http\Controllers\PesananPerbaikanController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -14,7 +14,17 @@ Route::prefix('user')->group(function () {
     Route::middleware(['auth:sanctum', 'user.type:user'])->group(function () {
         Route::post('logout', [UserAuthController::class, 'logout']);
         Route::get('profile', [UserAuthController::class, 'profile']);
-        Route::post('profile-update', [UserAuthController::class, 'updateProfile']); 
+        Route::post('profile-update', [UserAuthController::class, 'updateProfile']);
+        
+        // Rute kendaraan untuk pengguna
+        Route::get('kendaraan', [KendaraanController::class, 'index']);
+        Route::get('kendaraan/{id}', [KendaraanController::class, 'show']);
+        
+        // Rute pesanan perbaikan untuk pengguna
+        Route::get('pesanan', [PesananPerbaikanController::class, 'getPerbaikanUser']);
+        Route::get('pesanan/{id}', [PesananPerbaikanController::class, 'show']);
+        Route::post('pesanan/{id}/cancel', [PesananPerbaikanController::class, 'cancelOrder']);
+        Route::get('kendaraan/{kendaraanId}/pesanan', [PesananPerbaikanController::class, 'getPerbaikanKendaraan']);
     });
 });
 
@@ -36,5 +46,22 @@ Route::prefix('admin')->group(function () {
         Route::get('users/{id}', [AdminAuthController::class, 'getUser']);
         Route::post('users/{id}', [AdminAuthController::class, 'updateUser']);
         Route::delete('users/{id}', [AdminAuthController::class, 'deleteUser']);
+
+        // Rute manajemen kendaraan
+        Route::get('kendaraan', [KendaraanController::class, 'index']);
+        Route::get('kendaraan/{id}', [KendaraanController::class, 'show']);
+        Route::post('kendaraan', [KendaraanController::class, 'store']);
+        Route::put('kendaraan/{id}', [KendaraanController::class, 'update']);
+        Route::delete('kendaraan/{id}', [KendaraanController::class, 'destroy']);
+
+         // Rute manajemen pesanan perbaikan
+        Route::get('pesanan', [PesananPerbaikanController::class, 'index']);
+        Route::get('pesanan/statistics', [PesananPerbaikanController::class, 'getStatisticsPerbaikan']);
+        Route::get('pesanan/user/{userId?}', [PesananPerbaikanController::class, 'getPerbaikanUser']);
+        Route::get('pesanan/kendaraan/{kendaraanId}', [PesananPerbaikanController::class, 'getPerbaikanKendaraan']);
+        Route::get('pesanan/{id}', [PesananPerbaikanController::class, 'show']);
+        Route::post('pesanan', [PesananPerbaikanController::class, 'store']);
+        Route::put('pesanan/{id}', [PesananPerbaikanController::class, 'update']);
+        Route::delete('pesanan/{id}', [PesananPerbaikanController::class, 'destroy']);
     });
 });

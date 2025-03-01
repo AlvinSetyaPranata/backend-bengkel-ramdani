@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('user_id');
             $table->string('nama_kendaraan');
+            $table->string('gambar_kendaraan')->nullable();
             $table->string('plat_nomor')->unique();
             $table->year('tahun_produksi')->nullable();
             $table->string('warna')->nullable();

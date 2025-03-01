@@ -14,12 +14,13 @@ class Pesanan_Perbaikan extends Model
     use HasFactory,HasUuids;
 
     protected $fillable = [
-        'kendaraan_pelanggar_id',
+        'kendaraan_pelanggan_id',
         'tanggal_masuk',
         'tanggal_perbaikan',
         'tanggal_selesai',
         'total_biaya',
         'status',
+        'keterangan',
     ];
 
     public function kendaraan(): BelongsTo
