@@ -1,9 +1,16 @@
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Image } from "expo-image";
 import { ThemedView } from "@/components/ThemedView";
 import { SCREEN_HEIGHT } from "@/utils/constans";
 import { ThemedText } from "@/components/ThemedText";
 import ButtonGroup from "@/components/ButtonGroup";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const IMAGE_TEST = require("@/assets/images/account-test.jpg");
 
@@ -11,9 +18,6 @@ export default function LoginScreen() {
   return (
     <SafeAreaView>
       <ThemedView style={style.container}>
-        <View style={style.navbar}>
-          <Text style={{ fontWeight: '500'}}>Edit</Text>
-        </View>
         <View style={style.header}>
           <Image
             style={style.imageProfile}
@@ -23,8 +27,68 @@ export default function LoginScreen() {
           <ThemedText style={style.profileName}>Alvin Setya Pranata</ThemedText>
         </View>
 
-        <ButtonGroup style={style.buttonContainer} />
-
+        <View style={style.buttonContainer}>
+          <TouchableOpacity style={style.button}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                flexGrow: 1,
+                flexShrink: 1,
+                flexBasis: "0%",
+              }}
+            >
+              <MaterialIcons name="history" size={20} color="#00000" />
+              <Text style={{ marginLeft: 10 }}>Histori Perbaikan</Text>
+            </View>
+            <MaterialIcons name="arrow-right" size={24} color="#00000" />
+          </TouchableOpacity>
+          <TouchableOpacity style={style.button}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                flexGrow: 1,
+                flexShrink: 1,
+                flexBasis: "0%",
+              }}
+            >
+              <MaterialIcons name="settings" size={20} color="#00000" />
+              <Text style={{ marginLeft: 10 }}>Pengaturan</Text>
+            </View>
+            <MaterialIcons name="arrow-right" size={24} color="#00000" />
+          </TouchableOpacity>
+          <TouchableOpacity style={style.button}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                flexGrow: 1,
+                flexShrink: 1,
+                flexBasis: "0%",
+              }}
+            >
+              <MaterialIcons name="discount" size={20} color="#00000" />
+              <Text style={{ marginLeft: 10 }}>Kupon</Text>
+            </View>
+            <MaterialIcons name="arrow-right" size={24} color="#00000" />
+          </TouchableOpacity>
+          <TouchableOpacity style={style.button}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                flexGrow: 1,
+                flexShrink: 1,
+                flexBasis: "0%",
+              }}
+            >
+              <MaterialIcons name="info" size={20} color="#00000" />
+              <Text style={{ marginLeft: 10 }}>Kebijakan Privasi</Text>
+            </View>
+            <MaterialIcons name="arrow-right" size={24} color="#00000" />
+          </TouchableOpacity>
+        </View>
       </ThemedView>
     </SafeAreaView>
   );
@@ -35,23 +99,14 @@ const style = StyleSheet.create({
     paddingTop: 30,
     boxSizing: "border-box",
     minHeight: SCREEN_HEIGHT,
-    alignItems: 'center'
-  },
-
-  navbar: {
-    width: '100%',
-    paddingHorizontal: 10,
-    paddingTop: 5,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
+    alignItems: "center",
   },
 
   header: {
     minWidth: "100%",
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 40,
+    paddingVertical: 30,
   },
 
   imageProfile: {
@@ -63,12 +118,20 @@ const style = StyleSheet.create({
   profileName: {
     fontSize: 18,
     fontWeight: "bold",
-    marginTop: 24
+    marginTop: 24,
   },
 
   buttonContainer: {
+    width: '90%',
+    height: '90%',
+    borderRadius: 10,
+    rowGap: 30,
     marginTop: 20
-  }
+},
 
-
+  button: {
+    alignItems: "center",
+    flexDirection: "row",
+    columnGap: 10,
+  },
 });

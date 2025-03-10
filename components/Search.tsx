@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'black',
         borderRadius: 10,
-        paddingLeft: 5,
         paddingRight: 10,
     },
 
@@ -61,6 +60,8 @@ const styles = StyleSheet.create({
         fontSize: 13,
         flexShrink: 1,
         flexGrow: 1,
-        flexBasis: '0%'
+        flexBasis: '0%',
+        width: '100%',
+        paddingLeft: 5
     }
 })
