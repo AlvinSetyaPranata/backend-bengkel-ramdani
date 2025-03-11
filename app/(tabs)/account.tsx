@@ -9,12 +9,15 @@ import { Image } from "expo-image";
 import { ThemedView } from "@/components/ThemedView";
 import { SCREEN_HEIGHT } from "@/utils/constans";
 import { ThemedText } from "@/components/ThemedText";
-import ButtonGroup from "@/components/ButtonGroup";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Link, useNavigation } from "expo-router";
 
 const IMAGE_TEST = require("@/assets/images/account-test.jpg");
 
 export default function LoginScreen() {
+
+  const navigation = useNavigation()
+
   return (
     <SafeAreaView>
       <ThemedView style={style.container}>
@@ -43,6 +46,21 @@ export default function LoginScreen() {
             </View>
             <MaterialIcons name="arrow-right" size={24} color="#00000" />
           </TouchableOpacity>
+            <TouchableOpacity style={style.button} onPress={() => navigation.navigate("transportation")}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  flexGrow: 1,
+                  flexShrink: 1,
+                  flexBasis: "0%",
+                }}
+              >
+                <MaterialIcons name="car-rental" size={20} color="#00000" />
+                <Text style={{ marginLeft: 10 }}>Transportasi anda</Text>
+              </View>
+              <MaterialIcons name="arrow-right" size={24} color="#00000" />
+            </TouchableOpacity>
           <TouchableOpacity style={style.button}>
             <View
               style={{
@@ -55,21 +73,6 @@ export default function LoginScreen() {
             >
               <MaterialIcons name="settings" size={20} color="#00000" />
               <Text style={{ marginLeft: 10 }}>Pengaturan</Text>
-            </View>
-            <MaterialIcons name="arrow-right" size={24} color="#00000" />
-          </TouchableOpacity>
-          <TouchableOpacity style={style.button}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                flexGrow: 1,
-                flexShrink: 1,
-                flexBasis: "0%",
-              }}
-            >
-              <MaterialIcons name="discount" size={20} color="#00000" />
-              <Text style={{ marginLeft: 10 }}>Kupon</Text>
             </View>
             <MaterialIcons name="arrow-right" size={24} color="#00000" />
           </TouchableOpacity>
@@ -122,12 +125,12 @@ const style = StyleSheet.create({
   },
 
   buttonContainer: {
-    width: '90%',
-    height: '90%',
+    width: "90%",
+    height: "90%",
     borderRadius: 10,
     rowGap: 30,
-    marginTop: 20
-},
+    marginTop: 20,
+  },
 
   button: {
     alignItems: "center",
