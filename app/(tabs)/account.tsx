@@ -10,7 +10,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { SCREEN_HEIGHT } from "@/utils/constans";
 import { ThemedText } from "@/components/ThemedText";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Link, useNavigation } from "expo-router";
+import { useNavigation } from "expo-router";
 
 const IMAGE_TEST = require("@/assets/images/account-test.jpg");
 
@@ -31,7 +31,7 @@ export default function LoginScreen() {
         </View>
 
         <View style={style.buttonContainer}>
-          <TouchableOpacity style={style.button}>
+          <TouchableOpacity style={style.button} onPress={() => navigation.navigate("history")}>
             <View
               style={{
                 flexDirection: "row",

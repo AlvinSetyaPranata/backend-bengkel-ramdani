@@ -34,6 +34,8 @@ export default function RootLayout() {
         <Stack.Screen name="addService" options={{headerTitle: "Ajukan servis" }}/>
         <Stack.Screen name="transportation" options={{ headerTitle: "Transportasi Anda" }}/>
         <Stack.Screen name="transportationDetail" options={{ headerTitle: "Edit Transportasi" }}/>
+        <Stack.Screen name="addTransportation" options={{ headerTitle: "Tambah Transportasi" }}/>
+        <Stack.Screen name="histories" options={{ headerTitle: "Histori Perbaikan" }}/>
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { FlatList } from "react-native";
 import { Link, useRouter } from "expo-router";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Transportation() {
   const DATA = [
@@ -49,16 +50,39 @@ export default function Transportation() {
   );
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <FlatList
         data={DATA}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Item id={item.id} brand={item.brand} owner={item.owner} />
-        )}
-      />
+        )}/>
+        <Link href="/addTransportation" style={styles.fab}>
+            <View style={styles.fab}>
+              <MaterialIcons name="add" size={20} color="white"/>
+            </View>
+          </Link>
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+
+  fab: {
+    position: "absolute",
+    right: '10%',
+    bottom: '15%',
+    backgroundColor: "#0067A5",
+    width: 50,
+    height: 50,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5, // Shadow for Android
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    zIndex: 20
+  }
+});

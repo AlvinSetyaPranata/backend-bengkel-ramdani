@@ -4,7 +4,7 @@ import { useLocalSearchParams } from 'expo-router'
 import Form from '@/components/Molecules/Form'
 import { z } from 'zod'
 
-export default function transporatationDetail() {
+export default function addTransportation() {
     const { id } = useLocalSearchParams()
 
     useEffect(() => console.log(id), [])
@@ -19,15 +19,15 @@ export default function transporatationDetail() {
 
     const structure = {
       nama_kendaraan: ["", "Nama Kendaraan"],
-      warna_kendaraan: ["", "Warna Kendaraan"],
+      warna_kendaraan: ["password", "Warna Kendaraan"],
       plat_nomor: ["", "Plat Nomor"],
       gambar_kendaraan: ["", "Gambar Kendaraan"],
-      tahun_produksi: ["datetime", "Tahun Produksi"]
+      tahun_produksi: ["", "Tahun Produksi"]
     }
 
   return (
     <View style={styles.container}>
-     <Form structure={structure} schema={schema} />
+     <Form addButtonTitle='Tambah Transportasi' structure={structure} schema={schema} />
     </View>
   )
 }

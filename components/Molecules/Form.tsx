@@ -10,15 +10,19 @@ import React, { useState } from "react";
 import { z } from "zod";
 import Field from "../Atoms/Field";
 import PasswordField from "../Atoms/PasswordField";
+import RNDateTimePicker, { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
+import DatetimeField from "../Atoms/DatetimeField";
 
 interface propsType {
   structure: Record<string, string>;
   schema: z.ZodObject<{}, "strip", z.AnyZodObject>;
+  addButtonTitle?: string;
 }
 
-export default function Form({ structure, schema }: propsType) {
+export default function Form({ structure, schema, addButtonTitle }: propsType) {
   const [form, setForm] = useState({});
   const [errors, setErrors] = useState({});
+
 
   // useEffect(() => console.log(errors), [errors])
 
@@ -65,7 +69,13 @@ export default function Form({ structure, schema }: propsType) {
           error={errors[key] ? errors[key] : null}
         />
       )
-    } else {
+    } else if (value[0] == "datetime") {
+      return (
+      <DatetimeField title={value[1]} buttonTitle="Pilih Tanggal" key={index} />
+      )
+    }
+    
+    else {
       return (
         <Field
           key={index}
@@ -96,7 +106,7 @@ export default function Form({ structure, schema }: propsType) {
         }}
       >
         <Text style={{ color: "white", textAlign: "center" }}>
-          Perbarui Data
+          {addButtonTitle}
         </Text>
       </Pressable>
     </ScrollView>
