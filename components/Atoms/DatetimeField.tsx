@@ -34,13 +34,15 @@ export default function DatetimeField({
     if (event.type == "dismissed" || event.type == "set") {
       if (selectedDate) {
         setValue(selectedDate);
-        setter(name, selectedDate);
       }
 
       setShow(false);
       return;
     }
   };
+
+
+  useEffect(() => setter(name, value), [value])
 
   const styles = StyleSheet.create({
     inputContainer: {
@@ -68,7 +70,7 @@ export default function DatetimeField({
     },
   });
 
-  useEffect(() => console.log(value), [value]);
+  // useEffect(() => console.log(value), [value]);
 
   return (
     <View>
