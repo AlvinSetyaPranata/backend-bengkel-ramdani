@@ -12,6 +12,7 @@ import Field from "../Atoms/Field";
 import PasswordField from "../Atoms/PasswordField";
 import RNDateTimePicker, { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import DatetimeField from "../Atoms/DatetimeField";
+import ImageField from "../Atoms/ImageField";
 
 interface propsType {
   structure: Record<string, string>;
@@ -33,7 +34,7 @@ export default function Form({ structure, schema, addButtonTitle }: propsType) {
     });
 
   const onSubmit = (event: GestureResponderEvent) => {
-    event.preventDefault();
+    console.log(form)
 
     const result = schema.safeParse(form);
 
@@ -48,12 +49,12 @@ export default function Form({ structure, schema, addButtonTitle }: propsType) {
             .map(([field, value]) => [field, value._errors.join(", ")])
         )
       );
-
+      
+      
       return;
     }
 
     // Fetch to update resource
-    console.log(result);
   };
 
   const getField = (key: string, value: string[], index: string) => {
@@ -71,7 +72,11 @@ export default function Form({ structure, schema, addButtonTitle }: propsType) {
       )
     } else if (value[0] == "datetime") {
       return (
-      <DatetimeField title={value[1]} buttonTitle="Pilih Tanggal" key={index} />
+      <DatetimeField title={value[1]} name={key} setter={onChange} key={index} />
+    )
+  } else if (value[0] == "image"){
+    return  (
+      <ImageField title={value[1]} name={key} key={index} setter={onChange} />
       )
     }
     

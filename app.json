@@ -32,7 +32,11 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],[
+      "expo-image-picker",
+      {
+        "photosPermission": "Izinkan applikasi untuk menggunakan kameran"
+      }]
     ],
     "experiments": {
       "typedRoutes": true
