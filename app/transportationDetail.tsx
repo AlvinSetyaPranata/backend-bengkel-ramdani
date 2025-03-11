@@ -21,13 +21,13 @@ export default function transporatationDetail() {
       nama_kendaraan: ["", "Nama Kendaraan"],
       warna_kendaraan: ["", "Warna Kendaraan"],
       plat_nomor: ["", "Plat Nomor"],
-      gambar_kendaraan: ["", "Gambar Kendaraan"],
+      gambar_kendaraan: ["image", "Gambar Kendaraan"],
       tahun_produksi: ["datetime", "Tahun Produksi"]
     }
 
   return (
     <View style={styles.container}>
-     <Form structure={structure} schema={schema} />
+     <Form structure={structure} schema={schema} addButtonTitle='Update Transportasi'/>
     </View>
   )
 }
