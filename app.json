@@ -15,7 +15,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.fricilia.bengkel"
     },
     "web": {
       "bundler": "metro",
@@ -32,14 +36,24 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ],[
-      "expo-image-picker",
-      {
-        "photosPermission": "Izinkan applikasi untuk menggunakan kameran"
-      }]
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Izinkan applikasi untuk menggunakan kameran"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "a97934bc-6322-42ab-997d-f971e9a647c0"
+      }
     }
   }
 }
