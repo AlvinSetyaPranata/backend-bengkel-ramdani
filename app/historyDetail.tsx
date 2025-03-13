@@ -9,20 +9,6 @@ export default function historyDetail() {
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-          paddingVertical: 5,
-        }}
-      >
-        <Pressable style={styles.back} onPress={() => navigation.goBack()}>
-          <MaterialIcons name="chevron-left" size={24} />
-        </Pressable>
-        <Text style={styles.title}>Struk Pembayaran</Text>
-      </View>
-
       <View style={styles.header}>
         <View
           style={{
@@ -118,17 +104,6 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     paddingHorizontal: 10,
     flex: 1,
-  },
-
-  back: {
-    position: "absolute",
-    left: 0,
-  },
-
-  title: {
-    fontSize: 16,
-    fontWeight: 500,
-    textAlign: "center",
   },
 
   icon: {
