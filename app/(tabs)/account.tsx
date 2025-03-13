@@ -76,7 +76,7 @@ export default function LoginScreen() {
             </View>
             <MaterialIcons name="arrow-right" size={24} color="#00000" />
           </TouchableOpacity>
-          <TouchableOpacity style={style.button}>
+          <TouchableOpacity style={style.button} onPress={() => navigation.navigate("privacyTerms")}>
             <View
               style={{
                 flexDirection: "row",

@@ -1,0 +1,3 @@
+const reStructObjectFromURI = (uri: string) {
+    
+} 

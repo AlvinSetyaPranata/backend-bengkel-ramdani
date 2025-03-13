@@ -1,16 +1,15 @@
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import React, { useEffect } from 'react'
 import { useLocalSearchParams } from 'expo-router'
 import Form from '@/components/Molecules/Form'
 import { z } from 'zod'
+import Detail from '@/components/Molecules/Detail'
 
 export default function transporatationDetail() {
-    const { id } = useLocalSearchParams()
-
-    useEffect(() => console.log(id), [])
+    const {__EXPO_ROUTER_key, ...data} = useLocalSearchParams()
 
     const schema = z.object({
-      nama_kendaraan: z.string().min(1, "Harap diisi"),
+      merek_kendaraan: z.string().min(1, "Harap diisi"),
       warna_kendaraan: z.string().min(1, "Harap diisi"),
       plat_nomor: z.string().min(1, "Harap diisi"),
       gambar_kendaraan: z.string().min(1, "Harap diisi"),
@@ -18,34 +17,28 @@ export default function transporatationDetail() {
     })
 
     const structure = {
-      nama_kendaraan: ["", "Nama Kendaraan"],
-      warna_kendaraan: ["", "Warna Kendaraan"],
-      plat_nomor: ["", "Plat Nomor"],
-      gambar_kendaraan: ["image", "Gambar Kendaraan"],
-      tahun_produksi: ["datetime", "Tahun Produksi"]
+      merek_kendaraan: ["", "Merek Kendaraan", "merek_kendaraan"],
+      warna_kendaraan: ["", "Warna Kendaraan", "warna_kendaraan"],
+      plat_nomor: ["", "Plat Nomor", "plat_nomor"],
+      gambar_kendaraan: ["image", "Gambar Kendaraan", "gambar_kendaraan"],
+      tahun_produksi: ["datetime", "Tahun Produksi", "tahun_produksi"]
     }
 
+    // useEffect(() => console.log(data), [])
+
   return (
-    <View style={styles.container}>
-     <Form structure={structure} schema={schema} addButtonTitle='Update Transportasi'/>
-    </View>
+    <Detail title='Edit Transportasi'>
+      <View style={styles.content}>
+      <Form structure={structure} schema={schema} defaultValue={data} addButtonTitle='Perbarui Transportasi'/>
+      </View>
+    </Detail>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    rowGap: 32
-  },
 
-  field: {
-    rowGap: 12
-  },
-
-  input: {
-    backgroundColor: 'white',
-    borderRadius: 10,
+  content: {
+    paddingVertical: 10
   }
 
 })

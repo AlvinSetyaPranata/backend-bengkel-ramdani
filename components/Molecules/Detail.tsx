@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
@@ -34,7 +34,7 @@ export default function Detail({ title, children }: propsType) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: '10%'
+    paddingTop: '10%'
   },
 
   back: {

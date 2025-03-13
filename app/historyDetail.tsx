@@ -3,12 +3,13 @@ import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { SCREEN_WIDTH } from "@/utils/constans";
 import { useNavigation } from "expo-router";
+import Detail from "@/components/Molecules/Detail";
 
 export default function historyDetail() {
-    const navigation = useNavigation()
+  const navigation = useNavigation();
 
   return (
-    <View style={styles.container}>
+    <Detail title="Nota Pembayaran">
       <View style={styles.header}>
         <View
           style={{
@@ -28,7 +29,7 @@ export default function historyDetail() {
             color: "#636363",
           }}
         >
-          Pembayaan Berhasil
+          Lunas
         </Text>
         <Text
           style={{
@@ -77,13 +78,13 @@ export default function historyDetail() {
 
       <View
         style={{
-            width: SCREEN_WIDTH,  
-            justifyContent: 'center', 
-            alignItems: 'center',
-            position: 'absolute', 
-            bottom: 0, 
-            left: 0, 
-            paddingBottom: 10
+          width: SCREEN_WIDTH,
+          justifyContent: "center",
+          alignItems: "center",
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          paddingVertical: 10
         }}
       >
         <Pressable style={styles.download}>
@@ -95,17 +96,11 @@ export default function historyDetail() {
           </Text>
         </Pressable>
       </View>
-    </View>
+    </Detail>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingVertical: 30,
-    paddingHorizontal: 10,
-    flex: 1,
-  },
-
   icon: {
     width: 24,
     height: 24,
@@ -114,7 +109,7 @@ const styles = StyleSheet.create({
   header: {
     width: "100%",
     alignItems: "center",
-    paddingVertical: 42,
+    paddingVertical: 10,
   },
 
   contentContainer: {
@@ -122,6 +117,7 @@ const styles = StyleSheet.create({
     borderColor: "#8c8c8c",
     rowGap: 15,
     paddingVertical: 20,
+    marginTop: 20
   },
 
   detailWrapper: {

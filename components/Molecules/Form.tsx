@@ -10,7 +10,6 @@ import React, { useState } from "react";
 import { z } from "zod";
 import Field from "../Atoms/Field";
 import PasswordField from "../Atoms/PasswordField";
-import RNDateTimePicker, { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import DatetimeField from "../Atoms/DatetimeField";
 import ImageField from "../Atoms/ImageField";
 
@@ -18,9 +17,10 @@ interface propsType {
   structure: Record<string, string>;
   schema: z.ZodObject<{}, "strip", z.AnyZodObject>;
   addButtonTitle?: string;
+  defaultValue?: Record<string, string>
 }
 
-export default function Form({ structure, schema, addButtonTitle }: propsType) {
+export default function Form({ structure, schema, addButtonTitle, defaultValue}: propsType) {
   const [form, setForm] = useState({});
   const [errors, setErrors] = useState({});
 
@@ -57,7 +57,7 @@ export default function Form({ structure, schema, addButtonTitle }: propsType) {
     // Fetch to update resource
   };
 
-  const getField = (key: string, value: string[], index: string) => {
+  const getField = (key: string, value: string[], index: string, defaultValue?: string) => {
 
     if (value[0] == "password") {
       return (
@@ -68,15 +68,16 @@ export default function Form({ structure, schema, addButtonTitle }: propsType) {
           type={value[0]}
           setter={onChange}
           error={errors[key] ? errors[key] : null}
+          defaultValue={defaultValue[value[2]]}
         />
       )
     } else if (value[0] == "datetime") {
       return (
-      <DatetimeField title={value[1]} name={key} setter={onChange} key={index} />
+      <DatetimeField title={value[1]} name={key} setter={onChange} key={index} defaultValue={defaultValue[value[2]]}/>
     )
   } else if (value[0] == "image"){
     return  (
-      <ImageField title={value[1]} name={key} key={index} setter={onChange} />
+      <ImageField title={value[1]} name={key} key={index} setter={onChange}defaultValue={defaultValue[value[2]]}/>
       )
     }
     
@@ -89,6 +90,7 @@ export default function Form({ structure, schema, addButtonTitle }: propsType) {
           type={value[0]}
           setter={onChange}
           error={errors[key] ? errors[key] : null}
+          defaultValue={defaultValue[value[2]]}
         />
       );
     }
@@ -98,7 +100,7 @@ export default function Form({ structure, schema, addButtonTitle }: propsType) {
     <ScrollView>
       <View style={{ rowGap: 32 }}>
         {Object.entries(structure).map(([key, value], index) =>
-          getField(key, value, index)
+          getField(key, value, index, defaultValue)
         )}
       </View>
       <Pressable

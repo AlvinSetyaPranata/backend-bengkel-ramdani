@@ -22,7 +22,9 @@ export default function ImageField({
   setter,
   defaultValue = "",
 }: Props) {
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = useState<string>(defaultValue);
+
+  useEffect(() => console.log(image), [])
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({

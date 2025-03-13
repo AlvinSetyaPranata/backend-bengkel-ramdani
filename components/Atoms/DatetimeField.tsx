@@ -23,9 +23,9 @@ export default function DatetimeField({
   title,
   name,
   setter,
-  defaultValue = "",
+  defaultValue = null,
 }: Props) {
-  const [value, setValue] = useState(new Date());
+  const [value, setValue] = useState(new Date(defaultValue));
   const [show, setShow] = useState(false);
 
   const onChangeHandler = (event: DateTimePickerEvent, selectedDate?: Date) => {
