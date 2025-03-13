@@ -15,8 +15,9 @@ jobs:
 
     - name: Setup SSH
       run: |
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/github_rsa
-        chmod 600 ~/.ssh/github_rsa
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H 103.140.90.100 >> ~/.ssh/known_hosts
 
     - name: Pull latest changes from Git
