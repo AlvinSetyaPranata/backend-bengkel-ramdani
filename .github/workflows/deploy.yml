@@ -12,4 +12,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           KEY: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
+          passphrase: ${{ secrets.PASSPHRASE }}
           script: whoami
