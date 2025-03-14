@@ -18,7 +18,7 @@ jobs:
         mkdir -p ~/.ssh
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H 103.140.90.100 >> ~/.ssh/known_hosts
+        ssh-keyscan -H 103.140.90.100 -P 6401 >> ~/.ssh/known_hosts
 
     - name: Pull latest changes from Git
       run: ssh ynjnlkew@103.140.90.100 -p 6401 "cd fajargarage.api.alvinsetyapranata.my.id && git pull origin main"
