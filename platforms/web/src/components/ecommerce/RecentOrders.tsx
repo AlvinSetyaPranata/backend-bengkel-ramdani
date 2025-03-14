@@ -305,25 +305,25 @@ export default function RecentOrders() {
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400"
+                className="py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400 hidden xl:table-cell"
               >
                 Tanggal Masuk
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400"
+                className="py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400 hidden xl:table-cell"
               >
                 Tanggal Perbaikan
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400"
+                className="py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400 hidden xl:table-cell"
               >
                 Tanggal Selesai
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400"
+                className="py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400 hidden xl:table-cell"
               >
                 Total Biaya
               </TableCell>
@@ -335,7 +335,7 @@ export default function RecentOrders() {
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400"
+                className="py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400 hidden xl:table-cell"
               >
                 Keterangan
               </TableCell>
@@ -350,16 +350,16 @@ export default function RecentOrders() {
                 <TableCell className="py-3 text-center text-gray-500 text-theme-sm dark:text-gray-400">
                   {order.name}
                 </TableCell>
-                <TableCell className="py-3 text-center text-gray-500 text-theme-sm dark:text-gray-400">
+                <TableCell className="py-3 text-center text-gray-500 text-theme-sm dark:text-gray-400 hidden xl:table-cell">
                   {Intl.DateTimeFormat("en-GB").format(order.date_in)}
                 </TableCell>
-                <TableCell className="py-3 text-center text-gray-500 text-theme-sm dark:text-gray-400">
+                <TableCell className="py-3 text-center text-gray-500 text-theme-sm dark:text-gray-400 hidden xl:table-cell">
                   {Intl.DateTimeFormat("en-GB").format(order.date_fix)}
                 </TableCell>
-                <TableCell className="py-3 text-center text-gray-500 text-theme-sm dark:text-gray-400">
+                <TableCell className="py-3 text-center text-gray-500 text-theme-sm dark:text-gray-400 hidden xl:table-cell">
                   {Intl.DateTimeFormat("en-GB").format(order.date_finish)}
                 </TableCell>
-                <TableCell className="py-3 text-center text-gray-500 text-theme-sm dark:text-white font-medium">
+                <TableCell className="py-3 text-center text-gray-500 text-theme-sm dark:text-white font-medium hidden xl:table-cell">
                   {Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR"}).format(parseInt(order.budget))}
                 </TableCell>
                 <TableCell className="py-3 text-center text-gray-500 text-theme-sm dark:text-gray-400">
@@ -370,7 +370,7 @@ export default function RecentOrders() {
                     {order.status}
                   </Badge>
                 </TableCell>
-                <TableCell className="py-3 text-center text-gray-500 text-theme-sm dark:text-gray-400">
+                <TableCell className="py-3 text-center text-gray-500 text-theme-sm dark:text-gray-400 hidden xl:table-cell">
                   {order.information}
                 </TableCell>
               </TableRow>
