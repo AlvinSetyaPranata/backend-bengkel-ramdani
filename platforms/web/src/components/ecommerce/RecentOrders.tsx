@@ -359,8 +359,8 @@ export default function RecentOrders() {
                 <TableCell className="py-3 text-center text-gray-500 text-theme-sm dark:text-gray-400">
                   {Intl.DateTimeFormat("en-GB").format(order.date_finish)}
                 </TableCell>
-                <TableCell className="py-3 text-center text-gray-500 text-theme-sm dark:text-gray-400">
-                  {order.budget}
+                <TableCell className="py-3 text-center text-gray-500 text-theme-sm dark:text-white font-medium">
+                  {Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR"}).format(parseInt(order.budget))}
                 </TableCell>
                 <TableCell className="py-3 text-center text-gray-500 text-theme-sm dark:text-gray-400">
                   <Badge
