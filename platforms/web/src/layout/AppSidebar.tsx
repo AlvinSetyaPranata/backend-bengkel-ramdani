@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
+import { FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import { faCar } from "@fortawesome/free-solid-svg-icons"
 
 import {
   CalenderIcon,
@@ -8,7 +10,6 @@ import {
   HorizontaLDots,
   ListIcon,
   UserCircleIcon,
-
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 
@@ -21,19 +22,21 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   {
-    icon: <GridIcon />,
+    icon: (
+     <GridIcon />
+    ),
     name: "Dashboard",
     path: "/",
   },
   {
-    icon: <CalenderIcon />,
+    icon: <FontAwesomeIcon icon={faCar} />,
     name: "Data Kendaraan",
-    path: "/calendar",
+    path: "/vehicles",
   },
   {
     icon: <ListIcon />,
     name: "Data Pesanan",
-    path: "/profile",
+    path: "/orders",
   },
 ];
 
@@ -257,7 +260,9 @@ const AppSidebar: React.FC = () => {
         }`}
       >
         <Link to="/">
-          <h1 className="text-2xl font-bold dark:text-white text-black">Fajar Bengkel</h1>
+          <h1 className={`text-2xl font-bold dark:text-white text-black md:block`}>
+            Fajar Bengkel
+          </h1>
         </Link>
       </div>
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">

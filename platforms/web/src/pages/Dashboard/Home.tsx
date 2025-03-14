@@ -18,6 +18,11 @@ export default function Home() {
           <EcommerceMetrics />
         </div>
 
+        <div className="col-span-12 space-y-6 xl:col-span-7">
+          <StatisticsChart />
+          <StatisticsChart />
+        </div>
+
         <div className="col-span-12 xl:col-span-7">
           <RecentOrders />
         </div>
