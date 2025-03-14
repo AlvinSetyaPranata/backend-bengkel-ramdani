@@ -1,24 +1,15 @@
-name: Deploy to Hosting
-
-on:
-  push:
-    branches:
-      - main  # Change to your deployment branch if different
-
+name: remote ssh command
+on: [push]
 jobs:
-  deploy:
+  build:
+    name: Build
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: Setup SSH
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H 103.140.90.100 -P 6401 >> ~/.ssh/known_hosts
-
-    - name: Pull latest changes from Git
-      run: ssh ynjnlkew@103.140.90.100 -p 6401 "cd fajargarage.api.alvinsetyapranata.my.id && git pull origin main"
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          KEY: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: whoami
