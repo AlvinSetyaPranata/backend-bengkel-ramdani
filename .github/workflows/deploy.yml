@@ -21,4 +21,4 @@ jobs:
         ssh-keyscan -H 103.140.90.100 >> ~/.ssh/known_hosts
 
     - name: Pull latest changes from Git
-      run: ssh ynjnlkew@103.140.90.100 "cd fajargarage.api.alvinsetyapranata.my.id && git pull origin main"
+      run: ssh ynjnlkew@103.140.90.100 -p 6401 "cd fajargarage.api.alvinsetyapranata.my.id && git pull origin main"
