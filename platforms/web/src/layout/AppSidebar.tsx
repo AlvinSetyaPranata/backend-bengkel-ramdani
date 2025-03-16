@@ -260,7 +260,7 @@ const AppSidebar: React.FC = () => {
         }`}
       >
         <Link to="/">
-          <h1 className={`text-2xl font-bold dark:text-white text-black md:block`}>
+          <h1 className={`text-2xl font-bold dark:text-white text-black hidden md:block`}>
             Fajar Bengkel
           </h1>
         </Link>
