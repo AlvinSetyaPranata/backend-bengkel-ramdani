@@ -36,31 +36,31 @@ export default function Orders() {
       accessorKey: "kendaraan.nama_kendaraan",
       header: "Nama Kendaraan",
       cell: ({ getValue }) =>
-        isPending ? <Skeleton width={100} /> : (getValue() as string),
+        isPending ? <Skeleton width={100} height={10} className="bg-gray-500 animate-pulse"  /> : (getValue() as string),
     },
     {
       accessorKey: "kendaraan.plat_nomor",
       header: "Plat Nomor",
       cell: ({ getValue }) =>
-        isPending ? <Skeleton width={100} /> : (getValue() as string),
+        isPending ? <Skeleton width={100} height={10} className="bg-gray-500 animate-pulse"  /> : (getValue() as string),
     },
     {
       accessorKey: "tanggal_perbaikan",
       header: "Tanggal Perbaikan",
       cell: ({ getValue }) =>
-        isPending ? <Skeleton width={100} /> : (getValue() as string),
+        isPending ? <Skeleton width={100} height={10} className="bg-gray-500 animate-pulse"  /> : (getValue() as string),
     },
     {
       accessorKey: "status",
       header: "Status",
       cell: ({ getValue }) =>
-        isPending ? <Skeleton width={100} /> : (getValue() as string),
+        isPending ? <Skeleton width={100} height={10} className="bg-gray-500 animate-pulse"  /> : (getValue() as string),
     },
     {
       accessorKey: "keterangan",
       header: "Keterangan",
       cell: ({ getValue }) =>
-        isPending ? <Skeleton width={100} /> : (getValue() as string),
+        isPending ? <Skeleton width={100} height={10} className="bg-gray-500 animate-pulse"  /> : (getValue() as string),
     },
     {
       id: "actions",

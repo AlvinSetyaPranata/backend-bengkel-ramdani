@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
@@ -7,6 +7,7 @@ import { toast } from "react-toastify"
 import { useNavigate } from "react-router";
 import { useAtom } from "jotai/react";
 import { profileAtom, tokenAtom } from "../../atoms/auth";
+import Spinner from "../atoms/Spinner";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -14,8 +15,12 @@ export default function SignInForm() {
   const [, setToken] = useAtom(tokenAtom)
   const navigate = useNavigate()
 
-  
+  const [isPending, setIsPending] = useState(false)
+
+
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
+    setIsPending(true)
+
     event.preventDefault()
 
     const form = new FormData(event.currentTarget)
@@ -33,6 +38,7 @@ export default function SignInForm() {
       .then(res => {
         if (res.status == 401) {
           toast.error("Username atau Password salah!", { position: "top-right"})
+          setIsPending(false)
           return []
         }
 
@@ -40,6 +46,8 @@ export default function SignInForm() {
       })
       .then(data => {
         if (!data) {
+          toast.error("Gagal masuk!, harap hubungi admin!", { position: 'top-right' })
+          setIsPending(false)
           return
         }
 
@@ -49,6 +57,7 @@ export default function SignInForm() {
         setToken(responseData.token)
         
         toast.success("Berhasil Masuk", { position: "top-right"})
+        setIsPending(false)
 
         setTimeout(() => navigate("/"), 2000)
       })
@@ -100,8 +109,9 @@ export default function SignInForm() {
                   </div>
                 </div>
                 <div>
-                  <Button className="w-full" size="sm" type="submit">
-                    Sign in
+                  <Button className={`w-full bg-brand-600 text-white py-3 flex items-center gap-x-3 ${isPending ? 'opacity-75' : ''}`} type="submit">
+                    <Spinner state={isPending} />
+                    Masuk
                   </Button>
                 </div>
               </div>

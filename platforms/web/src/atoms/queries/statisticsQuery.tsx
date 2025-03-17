@@ -2,12 +2,12 @@ import { atomWithQuery } from "jotai-tanstack-query";
 import { tokenAtom } from "../auth";
 import QueryClientAtom from "../query";
 
-export const usersQueryAtom = atomWithQuery((get) => {
+export const statisticQueryAtom = atomWithQuery((get) => {
   const token = get(tokenAtom);
 
   if (!token) {
     return {
-      queryKey: ["users", null],
+      queryKey: ["statistic", null],
       queryFn: async () => {
         throw new Error("Unauthorized !");
       },
@@ -15,7 +15,7 @@ export const usersQueryAtom = atomWithQuery((get) => {
   }
 
   return {
-    queryKey: ["users"],
+    queryKey: ["statistic"],
     queryFn: async () => {
       const token = get(tokenAtom);
 
@@ -23,7 +23,7 @@ export const usersQueryAtom = atomWithQuery((get) => {
         return;
       }
 
-      return await fetch(`${import.meta.env.VITE_BASE_API_URL}/users`, {
+      return await fetch(`${import.meta.env.VITE_BASE_API_URL}/pesanan/statistics`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -32,7 +32,7 @@ export const usersQueryAtom = atomWithQuery((get) => {
           if (res.status == 401) {
             return [];
           }
-
+          
           return res.json();
         }
       );

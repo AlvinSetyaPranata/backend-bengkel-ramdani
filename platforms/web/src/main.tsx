@@ -14,7 +14,7 @@ createRoot(document.getElementById("root")!).render(
     <ThemeProvider>
       <AppWrapper>
         <App />
-        <ToastContainer />
+        <ToastContainer className="z-[9999]" />
       </AppWrapper>
     </ThemeProvider>
   </StrictMode>
