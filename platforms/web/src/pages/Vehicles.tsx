@@ -14,7 +14,7 @@ const Vehicles: React.FC = () => {
         description="This is React.js Calendar Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
       />
       <PageBreadcrumb pageTitle="Data Kendaraan" />
-      <DataTable />
+      {/* <DataTable /> */}
     </>
   );
 };

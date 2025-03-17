@@ -5,9 +5,13 @@ import Input from "../form/input/InputField";
 import Button from "../ui/button/Button";
 import { toast } from "react-toastify"
 import { useNavigate } from "react-router";
+import { useAtom } from "jotai/react";
+import { profileAtom, tokenAtom } from "../../atoms/auth";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const [, setProfile] = useAtom(profileAtom)
+  const [, setToken] = useAtom(tokenAtom)
   const navigate = useNavigate()
 
   
@@ -27,13 +31,26 @@ export default function SignInForm() {
       })
     })
       .then(res => {
-        if (res.ok) {
-          toast.success("Berhasil Masuk", { position: "top-right"})
-          navigate("/")
+        if (res.status == 401) {
+          toast.error("Username atau Password salah!", { position: "top-right"})
+          return []
+        }
+
+        return res.json()
+      })
+      .then(data => {
+        if (!data) {
           return
         }
 
-        toast.error("Gagal masuk, Credential tidak valid,")
+        const responseData = data.data
+        
+        setProfile(responseData.admin)
+        setToken(responseData.token)
+        
+        toast.success("Berhasil Masuk", { position: "top-right"})
+
+        setTimeout(() => navigate("/"), 2000)
       })
 
   }

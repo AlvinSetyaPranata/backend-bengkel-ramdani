@@ -13,7 +13,7 @@ export default function UserProfiles() {
         description="This is React.js Profile Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
       />
       <PageBreadcrumb pageTitle="Data Pelanggan" />
-      <DataTable />
+      {/* <DataTable /> */}
     </>
   );
 }
