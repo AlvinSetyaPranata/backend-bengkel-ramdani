@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/ui/table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { selectedItemAtom } from "../../atoms/components/datatable";
 
@@ -41,7 +41,6 @@ const DataTable = <D,>({ data, columns, pagination }: DataTableProps<D>) => {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-
 
 
 

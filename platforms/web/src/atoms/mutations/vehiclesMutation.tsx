@@ -1,9 +1,8 @@
 import { atomWithMutation } from "jotai-tanstack-query";
 import { tokenAtom } from "../auth";
 import QueryClientAtom from "../query";
-import { toast } from "react-toastify";
 
-const createOrderMutationAtom = atomWithMutation((get) => {
+const registerVehicleMutationAtom = atomWithMutation((get) => {
   const token = get(tokenAtom);
   const queryClient = get(QueryClientAtom); // ✅ Get QueryClient instance
 
@@ -31,10 +30,9 @@ const createOrderMutationAtom = atomWithMutation((get) => {
     },
 
     onSuccess: () => {
-      queryClient.invalidateQueries(["orders"]);
-      toast.success("Berhasil membuat pesanan", { position: 'top-right' })
+      queryClient.invalidateQueries(["vehicles"]);
     },
   };
 });
 
-export { createOrderMutationAtom };
+export { registerVehicleMutationAtom };

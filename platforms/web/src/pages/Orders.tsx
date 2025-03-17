@@ -8,7 +8,7 @@ import Button from "../components/ui/button/Button";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faX } from "@fortawesome/free-solid-svg-icons";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import {
   ModalWithForm,
   ModalWithConfirmation,
@@ -19,16 +19,17 @@ import Label from "../components/form/Label";
 import Select from "../components/form/Select";
 import TextArea from "../components/form/input/TextArea";
 import { createOrderMutationAtom } from "../atoms/mutations/ordersMutation";
+import { vehiclesQueryAtom } from "../atoms/queries/vehiclesQuery";
 
 export default function Orders() {
-  const [{ data, isPending }] = useAtom(ordersQuertyAtom);
+  const [{ data: orderQuery, isPending }] = useAtom(ordersQuertyAtom);
+  const [{ data: vehicleQuery }] = useAtom(vehiclesQueryAtom);
+
   const [iconActive, setIconActive] = useState(false);
   const [input, setInput] = useState("");
   const [modalType, setModalType] = useState("");
 
-  const [{mutate: createOrder}] = useAtom(createOrderMutationAtom)
-
-
+  const [{ mutate: createOrder }] = useAtom(createOrderMutationAtom);
 
   const columns: ColumnDef<typeof data>[] = [
     {
@@ -65,8 +66,6 @@ export default function Orders() {
       id: "actions",
       header: "Aksi",
       cell: ({ row }) => {
-
-
         return (
           <div className="flex gap-x-2 w-full justify-center">
             <Button
@@ -147,33 +146,52 @@ export default function Orders() {
         state={modalType == "create" || modalType == "update"}
       >
         <div>
-          <Label>Nama Kendaraan</Label>
+          <Label>Kendaraan</Label>
           <div className="relative">
-            <Input type="text" className="min-w-[300px]" name="nama_kendaraan" />
+            <Select
+              className="min-w-[300px]"
+              name="kendaraan_pelanggan_id"
+              placeholder="Pilih kendaraan"
+              options={
+                vehicleQuery
+                  ? vehicleQuery.data.map((vehicle) => {
+                      return { label: `${vehicle.nama_kendaraan} - ${vehicle.plat_nomor}`, value: vehicle.id };
+                    })
+                  : []
+              }
+            />
           </div>
         </div>
         <div>
           <Label>Tanggal Perbaikan</Label>
           <div className="relative">
-            <Input type="date" className="min-w-[300px]" name="tanggal_perbaikan"/>
+            <Input
+              type="date"
+              className="min-w-[300px]"
+              name="tanggal_perbaikan"
+            />
           </div>
         </div>
         <div>
           <Label>Tanggal Keluar</Label>
           <div className="relative">
-            <Input type="date" className="min-w-[300px]" name="tanggal_keluar"/>
+            <Input
+              type="date"
+              className="min-w-[300px]"
+              name="tanggal_keluar"
+            />
           </div>
         </div>
         <div>
           <Label>Tanggal Masuk</Label>
           <div className="relative">
-            <Input type="date" className="min-w-[300px]" name="tanggal_masuk"/>
+            <Input type="date" className="min-w-[300px]" name="tanggal_masuk" />
           </div>
         </div>
         <div>
           <Label>Total Biaya</Label>
           <div className="relative">
-            <Input type="number" className="min-w-[300px]" name="total_biaya"/>
+            <Input type="number" className="min-w-[300px]" name="total_biaya" />
           </div>
         </div>
         <div>
@@ -186,14 +204,17 @@ export default function Orders() {
                 { label: "Dalam Antrian", value: "dalam antrian" },
               ]}
               placeholder="Pilih Status"
-              
             />
           </div>
         </div>
         <div className="col-span-2">
           <Label>Keterangan</Label>
           <div className="relative">
-            <TextArea name="keterangan" placeholder="" disabled={false}></TextArea>
+            <TextArea
+              name="keterangan"
+              placeholder=""
+              disabled={false}
+            ></TextArea>
           </div>
         </div>
       </ModalWithForm>
@@ -242,9 +263,9 @@ export default function Orders() {
         </button>
       </div>
       <DataTable
-        data={data ? data.data : []}
+        data={orderQuery ? orderQuery.data : []}
         columns={columns}
-        pagination={data ? data.pagination : []}
+        pagination={orderQuery ? orderQuery.pagination : []}
       />
     </div>
   );
