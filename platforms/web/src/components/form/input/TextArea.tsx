@@ -1,10 +1,10 @@
 import React from "react";
 
 interface TextareaProps {
+  name: string;
   placeholder?: string; // Placeholder text
   rows?: number; // Number of rows
   value?: string; // Current value
-  onChange?: (value: string) => void; // Change handler
   className?: string; // Additional CSS classes
   disabled?: boolean; // Disabled state
   error?: boolean; // Error state
@@ -12,20 +12,15 @@ interface TextareaProps {
 }
 
 const TextArea: React.FC<TextareaProps> = ({
+  name,
   placeholder = "Enter your message", // Default placeholder
   rows = 3, // Default number of rows
   value = "", // Default value
-  onChange, // Callback for changes
   className = "", // Additional custom styles
   disabled = false, // Disabled state
   error = false, // Error state
   hint = "", // Default hint text
 }) => {
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (onChange) {
-      onChange(e.target.value);
-    }
-  };
 
   let textareaClasses = `w-full rounded-lg border px-4 py-2.5 text-sm shadow-theme-xs focus:outline-hidden ${className} `;
 
@@ -42,10 +37,10 @@ const TextArea: React.FC<TextareaProps> = ({
       <textarea
         placeholder={placeholder}
         rows={rows}
-        value={value}
-        onChange={handleChange}
+        defaultValue={value}
         disabled={disabled}
         className={textareaClasses}
+        name={name}
       />
       {hint && (
         <p

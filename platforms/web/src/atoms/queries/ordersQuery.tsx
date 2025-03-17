@@ -1,9 +1,8 @@
-import { atom } from "jotai";
-import { QueryClient } from "@tanstack/query-core";
 import { atomWithQuery } from "jotai-tanstack-query";
 import { tokenAtom } from "../auth";
+import QueryClientAtom from "../query";
 
-const QueryClientAtom = atom(new QueryClient());
+
 
 export const ordersQuertyAtom = atomWithQuery((get) => {
     const token = get(tokenAtom);
