@@ -8,7 +8,12 @@ const createOrderMutationAtom = atomWithMutation((get) => {
   const queryClient = get(QueryClientAtom); // ✅ Get QueryClient instance
 
   if (!token) {
-    return;
+    return {
+      mutationKey: ["orders"],
+      mutationFn: async (data: Record<any, any>) => {
+        throw new Error("Token is missing. Cannot create an order.");
+      },
+    };
   }
 
   return {
@@ -31,10 +36,12 @@ const createOrderMutationAtom = atomWithMutation((get) => {
     },
 
     onSuccess: () => {
-      queryClient.invalidateQueries(["orders"]);
+      queryClient.invalidateQueries({ queryKey: ['orders']});
       toast.success("Berhasil membuat pesanan", { position: 'top-right' })
     },
   };
 });
+
+
 
 export { createOrderMutationAtom };

@@ -7,7 +7,12 @@ const registerVehicleMutationAtom = atomWithMutation((get) => {
   const queryClient = get(QueryClientAtom); // ✅ Get QueryClient instance
 
   if (!token) {
-    return;
+    return {
+      mutationKey: ["vehicles"],
+      mutationFn: async () => {
+        throw new Error("Token is missing. Cannot create an order.");
+      },
+    };
   }
 
   return {
@@ -30,7 +35,7 @@ const registerVehicleMutationAtom = atomWithMutation((get) => {
     },
 
     onSuccess: () => {
-      queryClient.invalidateQueries(["vehicles"]);
+      queryClient.invalidateQueries({ queryKey: ["vehicles"]});
     },
   };
 });

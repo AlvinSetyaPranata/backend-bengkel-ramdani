@@ -31,7 +31,7 @@ export default function Orders() {
 
   const [{ mutate: createOrder }] = useAtom(createOrderMutationAtom);
 
-  const columns: ColumnDef<typeof data>[] = [
+  const columns: ColumnDef<typeof orderQuery>[] = [
     {
       accessorKey: "kendaraan.nama_kendaraan",
       header: "Nama Kendaraan",
@@ -65,7 +65,7 @@ export default function Orders() {
     {
       id: "actions",
       header: "Aksi",
-      cell: ({ row }) => {
+      cell: () => {
         return (
           <div className="flex gap-x-2 w-full justify-center">
             <Button

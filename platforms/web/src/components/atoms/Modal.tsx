@@ -1,7 +1,8 @@
-import { useAtom } from "jotai";
-import { FormEvent, FormEventHandler, PropsWithChildren } from "react";
-import { selectedItemAtom } from "../../atoms/components/datatable";
+// import { useAtom } from "jotai";
+import { FormEvent, PropsWithChildren } from "react";
+// import { selectedItemAtom } from "../../atoms/components/datatable";
 import Button from "../ui/button/Button";
+import { MutateFunction } from "@tanstack/query-core";
 
 interface BaseModalProps extends PropsWithChildren {
   title: string;
@@ -10,7 +11,7 @@ interface BaseModalProps extends PropsWithChildren {
 }
 
 function BaseModal({ title, state, onClose, children }: BaseModalProps) {
-  const [selectedItem,] = useAtom(selectedItemAtom);
+  // const [selectedItem,] = useAtom(selectedItemAtom);
 
   return (
     <div
@@ -125,7 +126,7 @@ export function ModalWithConfirmation({
 }
 
 interface ModalWithFormProps extends BaseModalProps {
-  mutation: () => void;
+  mutation: MutateFunction<any, unknown, Record<string, any>, unknown>;
   onCancel?: () => void;
   onOk?: () => void;
 }
