@@ -22,6 +22,16 @@ import { usersQueryAtom } from "../atoms/queries/usersQuery";
 import FileInput from "../components/form/input/FileInput";
 import { registerVehicleMutationAtom } from "../atoms/mutations/vehiclesMutation";
 
+
+
+const getStatus = (status: string) => {
+  if (status == "active") {
+    return "bg-green-500 text-white"
+  } else {
+    return "bg-red-500 text-white"
+  }
+}
+
 const Users: React.FC = () => {
   const [{ data, isPending }] = useAtom(vehiclesQueryAtom);
   const [iconActive, setIconActive] = useState(false);
@@ -73,35 +83,13 @@ const Users: React.FC = () => {
         isPending ? <Skeleton width={100} /> : (getValue() as string),
     },
     {
-      accessorKey: "email",
-      header: "Email",
-      cell: ({ getValue }) =>
-        isPending ? <Skeleton width={150} /> : (getValue() as string),
-    },
-    {
       accessorKey: "status",
       header: "Status",
       cell: ({ getValue }) =>
-        isPending ? <Skeleton width={80} /> : (getValue() as string),
-    },
-    {
-      accessorKey: "created_at",
-      header: "Tanggal Dibuat",
-      cell: ({ getValue }) =>
-        isPending ? (
-          <Skeleton width={150} />
-        ) : (
-          new Date(getValue() as string).toISOString().split("T")[0]
-        ),
-    },
-    {
-      accessorKey: "updated_at",
-      header: "Tanggal Diperbarui",
-      cell: ({ getValue }) =>
-        isPending ? (
-          <Skeleton width={150} />
-        ) : (
-          new Date(getValue() as string).toISOString().split("T")[0]
+        isPending ? <Skeleton width={80} /> : (
+          <div className={`w-max rounded-md mx-auto px-4 py-1 ${getStatus(getValue() as string)}`}>
+            {getValue() as string}
+          </div>
         ),
     },
     {
@@ -193,71 +181,39 @@ const Users: React.FC = () => {
         state={modalType == "create" || modalType == "update"}
       >
         <div>
-          <Label>Nama Pemilik</Label>
+          <Label>Avatar</Label>
           <div className="relative">
-            <Select
-              options={
-                userData
-                  ? userData.data.map((user) => {
-                      return { label: user.name, value: user.id };
-                    })
-                  : []
-              }
-              name="user_id"
-              placeholder="Pilih pemilik"
-            />
+            <FileInput name="avatar" />
           </div>
         </div>
         <div>
-          <Label>Nama Kendaraan</Label>
+          <Label>Nama</Label>
           <div className="relative">
             <Input
               type="text"
               className="min-w-[300px]"
-              name="nama_kendaraan"
+              name="nama"
             />
           </div>
         </div>
+
         <div>
-          <Label>Plat Nomor</Label>
+          <Label>Status</Label>
           <div className="relative">
-            <Input type="text" className="min-w-[300px]" name="plat_nomor" />
-          </div>
-        </div>
-        <div>
-          <Label>Tahun Produksi</Label>
-          <div className="relative">
-            <Input
-              type="number"
-              className="min-w-[300px]"
-              name="tahun_produksi"
+            <Select
+              options={[{label: "Aktif", value: "active"}, {label: "Tidak Aktif", value: "inactive"}]}
+              name="status"
+              placeholder="Status"
             />
           </div>
         </div>
-        <div>
-          <Label>Warna</Label>
-          <div className="relative">
-            <Input type="text" className="min-w-[300px]" name="warna" />
-          </div>
-        </div>
-        <div className="col-span-2">
-          <Label>Gambar Kendaraan</Label>
-          <div className="relative">
-            <FileInput name="gambar_kendaraan" />
-          </div>
-        </div>
+        
       </ModalWithForm>
 
       {/* update and create modal */}
 
       {/* Tables */}
       <div className="w-full flex justify-end gap-x-6">
-        <button
-          onClick={() => setModalType("create")}
-          className="bg-brand-600 text-white rounded-md py-2 px-2 text-sm"
-        >
-          Tambah Pengguna
-        </button>
         <div className="bg-white rounded-md py-2 px-3 flex gap-x-4 items-center">
           <input
             type="text"
