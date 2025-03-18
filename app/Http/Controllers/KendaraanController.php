@@ -60,6 +60,7 @@ class KendaraanController extends Controller
             
             $data = $request->all();
             $data['id'] = Str::uuid();
+
             
             // Menangani unggahan gambar
             if ($request->hasFile('gambar_kendaraan')) {
@@ -75,6 +76,7 @@ class KendaraanController extends Controller
         } catch(ValidationException $e) {
             return $this->errorResponse('Validasi gagal', $e->errors(), 422);
         } catch(\Exception $e) {
+            dd($e);
             return $this->errorResponse('Gagal menambahkan kendaraan', null, 500);
         }
     }
