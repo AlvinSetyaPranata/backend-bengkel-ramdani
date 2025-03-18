@@ -39,7 +39,7 @@ export default function SignInForm() {
         if (res.status == 401) {
           toast.error("Username atau Password salah!", { position: "top-right"})
           setIsPending(false)
-          return []
+          return undefined
         }
 
         return res.json()

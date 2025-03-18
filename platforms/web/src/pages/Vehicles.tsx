@@ -17,8 +17,10 @@ import Input from "../components/form/input/InputField";
 import Label from "../components/form/Label";
 import Select from "../components/form/Select";
 import TextArea from "../components/form/input/TextArea";
-import { createOrderMutationAtom } from "../atoms/mutations/ordersMutation";
 import { vehiclesQueryAtom } from "../atoms/queries/vehiclesQuery";
+import { usersQueryAtom } from "../atoms/queries/usersQuery";
+import FileInput from "../components/form/input/FileInput";
+import { registerVehicleMutationAtom } from "../atoms/mutations/vehiclesMutation";
 
 const Vehicles: React.FC = () => {
   const [{ data, isPending }] = useAtom(vehiclesQueryAtom);
@@ -26,7 +28,9 @@ const Vehicles: React.FC = () => {
   const [input, setInput] = useState("");
   const [modalType, setModalType] = useState("");
 
-  const [{ mutate: createOrder }] = useAtom(createOrderMutationAtom);
+  const [{ mutate: registerVehicle }] = useAtom(registerVehicleMutationAtom);
+
+  const [{ data: userData }] = useAtom(usersQueryAtom);
 
   const columns: ColumnDef<typeof data>[] = [
     {
@@ -119,6 +123,11 @@ const Vehicles: React.FC = () => {
     setInput(event.target.value);
   };
 
+  const handleRemove = () => {
+    setInput("");
+    setIconActive(false);
+  };
+
   return (
     <div>
       <PageMeta
@@ -139,9 +148,25 @@ const Vehicles: React.FC = () => {
       <ModalWithForm
         onClose={() => setModalType("")}
         title={modalType == "create" ? "Tambahkan Kendaraan" : "Edit Kendaraan"}
-        mutation={modalType == "create" ? createOrder : () => null}
+        mutation={modalType == "create" ? registerVehicle : () => null}
         state={modalType == "create" || modalType == "update"}
       >
+        <div>
+          <Label>Nama Pemilik</Label>
+          <div className="relative">
+            <Select
+              options={
+                userData
+                  ? userData.data.map((user) => {
+                      return { label: user.name, value: user.id };
+                    })
+                  : []
+              }
+              name="user_id"
+              placeholder="Pilih pemilik"
+            />
+          </div>
+        </div>
         <div>
           <Label>Nama Kendaraan</Label>
           <div className="relative">
@@ -153,58 +178,31 @@ const Vehicles: React.FC = () => {
           </div>
         </div>
         <div>
-          <Label>Tanggal Perbaikan</Label>
+          <Label>Plat Nomor</Label>
           <div className="relative">
             <Input
-              type="date"
+              type="text"
               className="min-w-[300px]"
-              name="tanggal_perbaikan"
+              name="plat_nomor"
             />
           </div>
         </div>
         <div>
-          <Label>Tanggal Keluar</Label>
+          <Label>Tahun Produksi</Label>
           <div className="relative">
-            <Input
-              type="date"
-              className="min-w-[300px]"
-              name="tanggal_keluar"
-            />
+            <Input type="number" className="min-w-[300px]" name="tahun_produksi" />
           </div>
         </div>
         <div>
-          <Label>Tanggal Masuk</Label>
+          <Label>Warna</Label>
           <div className="relative">
-            <Input type="date" className="min-w-[300px]" name="tanggal_masuk" />
-          </div>
-        </div>
-        <div>
-          <Label>Total Biaya</Label>
-          <div className="relative">
-            <Input type="number" className="min-w-[300px]" name="total_biaya" />
-          </div>
-        </div>
-        <div>
-          <Label>Status</Label>
-          <div className="relative">
-            <Select
-              options={[
-                { label: "Selesai", value: "selesai" },
-                { label: "Dalam Perbaikan", value: "dalam perbaikan" },
-                { label: "Dalam Antrian", value: "dalam antrian" },
-              ]}
-              placeholder="Pilih Status"
-            />
+            <Input type="text" className="min-w-[300px]" name="warna" />
           </div>
         </div>
         <div className="col-span-2">
-          <Label>Keterangan</Label>
+          <Label>Gambar Kendaraan</Label>
           <div className="relative">
-            <TextArea
-              name="keterangan"
-              placeholder=""
-              disabled={false}
-            ></TextArea>
+            <FileInput name="gambar_kendaraan" />
           </div>
         </div>
       </ModalWithForm>
@@ -227,7 +225,7 @@ const Vehicles: React.FC = () => {
             onChange={onInputChange}
             value={input}
           />
-          <button onClick={() => (iconActive ? setInput("") : "")}>
+          <button onClick={handleRemove}>
             <FontAwesomeIcon
               icon={iconActive ? faX : faSearch}
               color="gray"

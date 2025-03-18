@@ -21,6 +21,19 @@ import TextArea from "../components/form/input/TextArea";
 import { createOrderMutationAtom } from "../atoms/mutations/ordersMutation";
 import { vehiclesQueryAtom } from "../atoms/queries/vehiclesQuery";
 
+
+
+function getStatus(value: string) {
+  switch(value) {
+    case "menunggu":
+      return "bg-blue-500 text-white"
+    case "proses":
+      return "bg-yellow-500 text-white"
+      case "selesai":
+      return "bg-green-500 text-white"
+  }
+}
+
 export default function Orders() {
   const [{ data: orderQuery, isPending }] = useAtom(ordersQuertyAtom);
   const [{ data: vehicleQuery }] = useAtom(vehiclesQueryAtom);
@@ -54,7 +67,7 @@ export default function Orders() {
       accessorKey: "status",
       header: "Status",
       cell: ({ getValue }) =>
-        isPending ? <Skeleton width={100} height={10} className="bg-gray-500 animate-pulse"  /> : (getValue() as string),
+        isPending ? <Skeleton width={100} height={10} className="bg-gray-500 animate-pulse"  /> : <div className={`py-1 rounded-md capitalize ${getStatus(getValue() as string)}`}>{getValue() as string}</div>,
     },
     {
       accessorKey: "keterangan",
@@ -113,14 +126,19 @@ export default function Orders() {
   ];
 
   const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.value) {
-      setIconActive(true);
-    } else {
+    if (event.target.value.length <= 0) {
       setIconActive(false);
+    } else {
+      setIconActive(true);
     }
 
     setInput(event.target.value);
   };
+
+  const handleRemove = () => {
+    setInput("")
+    setIconActive(false)
+  }
 
   return (
     <div>
@@ -237,7 +255,7 @@ export default function Orders() {
             onChange={onInputChange}
             value={input}
           />
-          <button onClick={() => (iconActive ? setInput("") : "")}>
+          <button onClick={handleRemove}>
             <FontAwesomeIcon
               icon={iconActive ? faX : faSearch}
               color="gray"
