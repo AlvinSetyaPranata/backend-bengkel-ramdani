@@ -13,7 +13,7 @@ trait ApiResponse
         ], $code);
     }
 
-    protected function errorResponse($pesan, $errors = null, $code)
+    protected function errorResponse($pesan, $errors, $code)
     {
         $response = [
             'status' => 'error',

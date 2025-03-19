@@ -20,5 +20,5 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        return response()->json(['messege' => 'Unauthorized'], 401);
     })->create();

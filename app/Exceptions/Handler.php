@@ -15,6 +15,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -29,6 +30,16 @@ class Handler extends ExceptionHandler
         'password',
         'password_confirmation',
     ];
+
+
+
+    public function unauthenticated($request, AuthenticationException $exception)
+    {
+        return response()->json([
+            'success' => false,
+            'message' => 'Unauthorized',
+        ], 401);
+    }
 
     /**
      * Register the exception handling callbacks for the application.
@@ -121,21 +132,21 @@ class Handler extends ExceptionHandler
 
         if ($e instanceof QueryException) {
             logger()->error('Database Error: ' . $e->getMessage());
-            
+
             // Deteksi foreign key constraint errors
             if (str_contains($e->getMessage(), 'foreign key constraint fails')) {
                 $response['pesan'] = 'Referensi data tidak valid';
                 $response['error'] = 'Data yang direferensikan tidak ada atau sedang digunakan';
                 return response()->json($response, 409);
             }
-            
+
             // Deteksi duplicate entry errors
             if (str_contains($e->getMessage(), 'Duplicate entry')) {
                 $response['pesan'] = 'Data duplikat';
                 $response['error'] = 'Data yang sama sudah ada';
                 return response()->json($response, 409);
             }
-            
+
             $response['pesan'] = 'Error database';
             $response['error'] = 'Terjadi kesalahan saat memproses permintaan Anda';
             return response()->json($response, 500);
@@ -150,7 +161,7 @@ class Handler extends ExceptionHandler
 
         // Untuk exception lain yang tidak ditangani secara khusus
         logger()->error('Unhandled Exception: ' . $e->getMessage());
-        
+
         if (config('app.debug')) {
             $response['pesan'] = 'Error Server';
             $response['error'] = $e->getMessage();
