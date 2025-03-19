@@ -1,8 +1,10 @@
 import {
   useReactTable,
-  getCoreRowModel,
   ColumnDef,
   flexRender,
+  SortingState,
+  getSortedRowModel,
+  getCoreRowModel,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -12,36 +14,53 @@ import {
   TableRow,
 } from "../../components/ui/table";
 import { useEffect, useState } from "react";
-import { useAtom } from "jotai";
-import { selectedItemAtom } from "../../atoms/components/datatable";
-
 
 type paginationType = {
-  total: number,
-  per_halaman: number,
-  halaman_sekarang: number,
-  halaman_terakhir: number,
-  dari: number,
-  sampai: number,
+  total: number;
+  per_halaman: number;
+  halaman_sekarang: number;
+  halaman_terakhir: number;
+  dari: number;
+  sampai: number;
+};
+
+interface DataTableProps<D> {
+  data: D[];
+  columns: ColumnDef<D>[];
+  pagination: paginationType;
+  page: number;
+  pageSetter: (page: string) => void;
 }
 
-interface DataTableProps<D>{
-  data: D[],
-  columns: ColumnDef<D>[],
-  pagination: paginationType,
-  page: number,
-  pageSetter: (page: string) => void
-}
-
-const DataTable = <D,>({ data, columns, pagination, page, pageSetter }: DataTableProps<D>) => {
+const DataTable = <D,>({
+  data,
+  columns,
+  pagination,
+  page,
+  pageSetter,
+}: DataTableProps<D>) => {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [enabledSort, setEnableSort] = useState("")
 
   const table = useReactTable({
     data,
     columns,
+    state: { sorting },
+    getSortedRowModel: getSortedRowModel(),
     getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
   });
 
 
+  const enableSortHandler = (header) => {
+    header.column.toggleSorting(header.column.getIsSorted() === 'asc')
+
+    if (header.id == enabledSort) {
+      setEnableSort("")
+      return
+    }
+    setEnableSort(header.id)
+  }
 
   return (
     <div>
@@ -58,10 +77,27 @@ const DataTable = <D,>({ data, columns, pagination, page, pageSetter }: DataTabl
                         isHeader
                         className="px-5 py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400"
                       >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        <div className="flex items-center justify-center gap-x-2">
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                          <button onClick={() => enableSortHandler(header)}>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              className={`size-4 stroke-black ${enabledSort == header.id ? 'dark:stroke-amber-500' : 'dark:stroke-white'}`}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"
+                              />
+                            </svg>
+                          </button>
+                        </div>
                       </TableCell>
                     ))}
                   </TableRow>
@@ -91,23 +127,27 @@ const DataTable = <D,>({ data, columns, pagination, page, pageSetter }: DataTabl
 
       {/* pagination controls */}
       <div className="w-full flex justify-end">
-      <div className="flex justify-center gap-4 mt-4">
-        <button
-          className="px-4 py-2 dark:bg-brand-600  dark:text-white rounded hover:cursor-pointer text-sm"
-          onClick={() => pageSetter((prev) => Math.max(prev - 1, 1))}
-          disabled={page === 1}
-        >
-          Previous
-        </button>
-        <span className="px-4 py-2 dark:text-gray-400">{pagination.halaman_sekarang} / {pagination.halaman_terakhir}</span>
-        <button
-          className="px-4 py-2 dark:bg-brand-600  dark:text-white rounded hover:cursor-pointer text-sm"
-          onClick={() => pageSetter((prev) => Math.min(prev + 1, pagination.total))}
-          disabled={page === pagination.total}
-        >
-          Next
-        </button>
-      </div>
+        <div className="flex justify-center gap-4 mt-4">
+          <button
+            className="px-4 py-2 dark:bg-brand-600  dark:text-white rounded hover:cursor-pointer text-sm"
+            onClick={() => pageSetter((prev) => Math.max(prev - 1, 1))}
+            disabled={page === 1}
+          >
+            Previous
+          </button>
+          <span className="px-4 py-2 dark:text-gray-400">
+            {pagination.halaman_sekarang} / {pagination.halaman_terakhir}
+          </span>
+          <button
+            className="px-4 py-2 dark:bg-brand-600  dark:text-white rounded hover:cursor-pointer text-sm"
+            onClick={() =>
+              pageSetter((prev) => Math.min(prev + 1, pagination.total))
+            }
+            disabled={page === pagination.total}
+          >
+            Next
+          </button>
+        </div>
       </div>
       {/* pagination controls */}
     </div>
