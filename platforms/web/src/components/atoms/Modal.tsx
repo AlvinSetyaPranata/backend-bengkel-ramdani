@@ -90,18 +90,26 @@ export function ModalWithMessege({
 
 
 interface ModalWithConfirmationProps extends Omit<BaseModalProps, "children"|"onClose"> {
+  mutation: MutateFunction<any, unknown, Record<string, any>, unknown>;
+  id: string;
   messege: string;
   onCancel: () => void;
-  onOk: () => void;
 }
 
 export function ModalWithConfirmation({
   title,
   messege,
-  onOk,
   onCancel,
+  mutation,
+  id,
   state,
 }: ModalWithConfirmationProps) {
+
+  const okHandler = async () => {
+    mutation({ id: id})
+    onCancel()
+  }
+
   return (
     <BaseModal title={title} state={state} onClose={onCancel}>
       <div className="px-6 py-4 space-y-12">
@@ -114,7 +122,7 @@ export function ModalWithConfirmation({
             Cancel
           </Button>
           <Button
-            onClick={onOk}
+            onClick={okHandler}
             className="bg-blue-500 text-white rounded-md font-medium px-4 py-2 text-sm"
           >
             Ok
@@ -127,28 +135,35 @@ export function ModalWithConfirmation({
 
 interface ModalWithFormProps extends BaseModalProps {
   mutation: MutateFunction<any, unknown, Record<string, any>, unknown>;
+  method: "UPDATE"|"CREATE";
   onCancel?: () => void;
   onOk?: () => void;
+  selectedInstance?: unknown
 }
 
 export function ModalWithForm({
   title,
   mutation,
+  method,
   onClose,
   state,
   children,
+  selectedInstance
 }: ModalWithFormProps) {
 
   const onFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    console.log(mutation)
-
     const formData = new FormData(event.currentTarget);
 
    const res = Object.fromEntries(formData.entries())
 
-    await mutation(res)
+   if (method == "UPDATE") {
+     await mutation({data: res, id: selectedInstance.id}) 
+    } else {
+      await mutation(res)
+    }
+    
     onClose()
 
   }

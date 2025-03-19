@@ -18,7 +18,7 @@ import Input from "../components/form/input/InputField";
 import Label from "../components/form/Label";
 import Select from "../components/form/Select";
 import TextArea from "../components/form/input/TextArea";
-import { createOrderMutationAtom } from "../atoms/mutations/ordersMutation";
+import { createOrderMutationAtom, deleteOrderMutationAtom, updateOrderMutationAtom } from "../atoms/mutations/ordersMutation";
 import { vehiclesQueryAtom } from "../atoms/queries/vehiclesQuery";
 
 
@@ -43,6 +43,16 @@ export default function Orders() {
   const [modalType, setModalType] = useState("");
 
   const [{ mutate: createOrder }] = useAtom(createOrderMutationAtom);
+  const [{ mutate: updateOrder }] = useAtom(updateOrderMutationAtom)
+  const [{ mutate: deleteOrder }] = useAtom(deleteOrderMutationAtom)
+
+  const [selectedInstance, setSelectedInstance] = useState({})
+
+
+  const handleActionPress = (type, instance) => {
+    setModalType(type)
+    setSelectedInstance(instance)
+  }
 
   const columns: ColumnDef<typeof orderQuery>[] = [
     {
@@ -78,12 +88,12 @@ export default function Orders() {
     {
       id: "actions",
       header: "Aksi",
-      cell: () => {
+      cell: ({ row }) => {
         return (
           <div className="flex gap-x-2 w-full justify-center">
             <Button
               className="bg-blue-500 p-2"
-              onClick={() => setModalType("update")}
+              onClick={() => handleActionPress("update", row.original)}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -102,7 +112,7 @@ export default function Orders() {
             </Button>
             <Button
               className="bg-red-500 p-2"
-              onClick={() => setModalType("delete")}
+              onClick={() => handleActionPress("delete", row.original)}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -151,7 +161,8 @@ export default function Orders() {
       <ModalWithConfirmation
         messege="Apakah anda ingin membatalkan pesanan ini?"
         title="Peringatan"
-        onOk={() => null}
+        mutation={deleteOrder}
+        id={selectedInstance ? selectedInstance.id : null}
         onCancel={() => setModalType("")}
         state={modalType == "delete"}
       />
@@ -160,8 +171,10 @@ export default function Orders() {
       <ModalWithForm
         onClose={() => setModalType("")}
         title={modalType == "create" ? "Buat Pesanan" : "Edit Pesanan"}
-        mutation={modalType == "create" ? createOrder : () => null}
+        mutation={modalType == "create" ? createOrder : updateOrder}
         state={modalType == "create" || modalType == "update"}
+        selectedInstance={(modalType == "update" &&  selectedInstance) ? selectedInstance : {}}
+        method={modalType.toUpperCase()}
       >
         <div>
           <Label>Kendaraan</Label>
@@ -177,6 +190,7 @@ export default function Orders() {
                     })
                   : []
               }
+              defaultValue={(modalType == "update" && selectedInstance) ? selectedInstance.kendaraan_pelanggan_id : ""}
             />
           </div>
         </div>
@@ -187,6 +201,7 @@ export default function Orders() {
               type="date"
               className="min-w-[300px]"
               name="tanggal_perbaikan"
+              defaultValue={(modalType == "update" && selectedInstance) ? selectedInstance.tanggal_perbaikan : ""}
             />
           </div>
         </div>
@@ -196,20 +211,21 @@ export default function Orders() {
             <Input
               type="date"
               className="min-w-[300px]"
-              name="tanggal_keluar"
+              name="tanggal_selesai"
+              defaultValue={(modalType == "update" && selectedInstance) ? selectedInstance.tanggal_selesai : ""}
             />
           </div>
         </div>
         <div>
           <Label>Tanggal Masuk</Label>
           <div className="relative">
-            <Input type="date" className="min-w-[300px]" name="tanggal_masuk" />
+            <Input type="date" className="min-w-[300px]" name="tanggal_masuk" defaultValue={(modalType == "update" && selectedInstance) ? selectedInstance.tanggal_masuk : ""}/>
           </div>
         </div>
         <div>
           <Label>Total Biaya</Label>
           <div className="relative">
-            <Input type="number" className="min-w-[300px]" name="total_biaya" />
+            <Input type="number" className="min-w-[300px]" name="total_biaya" defaultValue={(modalType == "update" && selectedInstance) ? selectedInstance.total_biaya : ""}/>
           </div>
         </div>
         <div>
@@ -222,6 +238,7 @@ export default function Orders() {
                 { label: "Dalam Antrian", value: "dalam antrian" },
               ]}
               placeholder="Pilih Status"
+              defaultValue={(modalType == "update" && selectedInstance) ? selectedInstance.status : ""}
             />
           </div>
         </div>
@@ -232,6 +249,7 @@ export default function Orders() {
               name="keterangan"
               placeholder=""
               disabled={false}
+              defaultValue={(modalType == "update" && selectedInstance) ? selectedInstance.keterangan : ""}
             ></TextArea>
           </div>
         </div>

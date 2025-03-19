@@ -1,13 +1,13 @@
 import type React from "react";
-import type { FC } from "react";
+import { ChangeEvent, useEffect, useState, type FC } from "react";
 
 interface InputProps {
+  defaultValue?: string;
   type?: "text" | "number" | "email" | "password" | "date" | "time" | string;
   id?: string;
   name?: string;
   placeholder?: string;
   value?: string | number;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   min?: string;
   max?: string;
@@ -23,12 +23,11 @@ const Input: FC<InputProps> = ({
   id,
   name,
   placeholder,
-  value,
-  onChange,
   className = "",
   min,
   max,
   step,
+  defaultValue = "",
   disabled = false,
   success = false,
   error = false,
@@ -45,6 +44,13 @@ const Input: FC<InputProps> = ({
   } else {
     inputClasses += ` bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20 dark:border-gray-700 dark:text-white/90  dark:focus:border-brand-800`;
   }
+
+  const [value, setValue] = useState(defaultValue)
+
+
+  const onChange = (event: ChangeEvent<HTMLInputElement>) => setValue(event.target.value)
+
+  useEffect(() => setValue(defaultValue), [defaultValue])
 
   return (
     <div className="relative">

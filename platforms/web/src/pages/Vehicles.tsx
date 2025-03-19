@@ -7,7 +7,7 @@ import Button from "../components/ui/button/Button";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faX } from "@fortawesome/free-solid-svg-icons";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import {
   ModalWithForm,
   ModalWithConfirmation,
@@ -20,7 +20,8 @@ import TextArea from "../components/form/input/TextArea";
 import { vehiclesQueryAtom } from "../atoms/queries/vehiclesQuery";
 import { usersQueryAtom } from "../atoms/queries/usersQuery";
 import FileInput from "../components/form/input/FileInput";
-import { registerVehicleMutationAtom } from "../atoms/mutations/vehiclesMutation";
+import { deleteVehicleMutationAtom, registerVehicleMutationAtom, updateVehicleMutationAtom } from "../atoms/mutations/vehiclesMutation";
+import ImageField from "../components/form/input/ImageField";
 
 const Vehicles: React.FC = () => {
   const [{ data, isPending }] = useAtom(vehiclesQueryAtom);
@@ -28,7 +29,11 @@ const Vehicles: React.FC = () => {
   const [input, setInput] = useState("");
   const [modalType, setModalType] = useState("");
 
+  const [selectedData, setSelectedData] = useState({});
+
   const [{ mutate: registerVehicle }] = useAtom(registerVehicleMutationAtom);
+  const [{ mutate: updateVehicle }] = useAtom(updateVehicleMutationAtom);
+  const [{ mutate: deleteVehicle }] = useAtom(deleteVehicleMutationAtom);
 
   const [{ data: userData }] = useAtom(usersQueryAtom);
 
@@ -71,7 +76,7 @@ const Vehicles: React.FC = () => {
           <div className="flex gap-x-2 w-full justify-center">
             <Button
               className="bg-blue-500 p-2"
-              onClick={() => setModalType("update")}
+              onClick={() => onActionClick("update", row.original)}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -90,7 +95,7 @@ const Vehicles: React.FC = () => {
             </Button>
             <Button
               className="bg-red-500 p-2"
-              onClick={() => setModalType("delete")}
+              onClick={() => onActionClick("delete", row.original)}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -113,6 +118,12 @@ const Vehicles: React.FC = () => {
     },
   ];
 
+  const onActionClick = (type, instance) => {
+    setModalType(type);
+    setSelectedData(instance);
+    console.log(instance);
+  };
+
   const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.value) {
       setIconActive(true);
@@ -128,6 +139,10 @@ const Vehicles: React.FC = () => {
     setIconActive(false);
   };
 
+  useEffect(() => {
+    console.log(selectedData ? selectedData.nama_kendaraan : "");
+  }, [selectedData]);
+
   return (
     <div>
       <PageMeta
@@ -139,7 +154,8 @@ const Vehicles: React.FC = () => {
       <ModalWithConfirmation
         messege="Apakah anda ingin menghapus kendaraan ini?"
         title="Peringatan"
-        onOk={() => null}
+        mutation={deleteVehicle}
+        id={selectedData ? selectedData.id : null}
         onCancel={() => setModalType("")}
         state={modalType == "delete"}
       />
@@ -148,8 +164,10 @@ const Vehicles: React.FC = () => {
       <ModalWithForm
         onClose={() => setModalType("")}
         title={modalType == "create" ? "Tambahkan Kendaraan" : "Edit Kendaraan"}
-        mutation={modalType == "create" ? registerVehicle : () => null}
+        mutation={modalType == "create" ? registerVehicle : updateVehicle}
         state={modalType == "create" || modalType == "update"}
+        method={modalType.toUpperCase()}
+        selectedInstance={modalType == "update" && selectedData ? selectedData : {}}
       >
         <div>
           <Label>Nama Pemilik</Label>
@@ -164,6 +182,7 @@ const Vehicles: React.FC = () => {
               }
               name="user_id"
               placeholder="Pilih pemilik"
+              defaultValue={(modalType == "update" && selectedData) ? selectedData.user_id : ""}
             />
           </div>
         </div>
@@ -174,6 +193,7 @@ const Vehicles: React.FC = () => {
               type="text"
               className="min-w-[300px]"
               name="nama_kendaraan"
+              defaultValue={(modalType == "update" && selectedData) ? selectedData.nama_kendaraan : ""}
             />
           </div>
         </div>
@@ -184,25 +204,40 @@ const Vehicles: React.FC = () => {
               type="text"
               className="min-w-[300px]"
               name="plat_nomor"
+              defaultValue={(modalType == "update" && selectedData) ? selectedData.plat_nomor : ""}
             />
           </div>
         </div>
         <div>
           <Label>Tahun Produksi</Label>
           <div className="relative">
-            <Input type="number" className="min-w-[300px]" name="tahun_produksi" />
+            <Input
+              type="number"
+              className="min-w-[300px]"
+              name="tahun_produksi"
+              defaultValue={(modalType == "update" && selectedData) ? selectedData.tahun_produksi : ""}
+            />
           </div>
         </div>
         <div>
           <Label>Warna</Label>
           <div className="relative">
-            <Input type="text" className="min-w-[300px]" name="warna" />
+            <Input
+              type="text"
+              className="min-w-[300px]"
+              name="warna"
+              defaultValue={(modalType == "update" && selectedData) ? selectedData.warna : ""}
+            />
           </div>
         </div>
         <div className="col-span-2">
           <Label>Gambar Kendaraan</Label>
           <div className="relative">
-            <FileInput name="gambar_kendaraan" />
+            {modalType == "update" && selectedData && selectedData.gambar_kendaraan ? (
+              <ImageField src={selectedData.gambar_kendaraan} />
+            ) : (
+              <FileInput name="gambar_kendaraan" />
+            )}
           </div>
         </div>
       </ModalWithForm>
