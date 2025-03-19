@@ -49,6 +49,14 @@ class KendaraanController extends Controller
     public function store(Request $request)
     {
         try {
+            if (Kendaraan::where('plat_nomor', $request
+            ->plat_nomor)
+            ->where('plat_nomor', $request->plat_nomor)
+            ->exists()) {
+                return $this->errorResponse('Duplikasi pada plat nomor', 'Plat nomor ini telah terdaftar', 409);
+            }
+
+            
             $request->validate([
                 'user_id' => 'required|uuid|exists:users,id',
                 'nama_kendaraan' => 'required|string|max:255',
@@ -70,6 +78,8 @@ class KendaraanController extends Controller
                 $data['gambar_kendaraan'] = $path;
             }
             
+
+
             $kendaraan = Kendaraan::create($data);
             
             return $this->successResponse($kendaraan, 'Kendaraan berhasil ditambahkan', 201);
@@ -115,7 +125,10 @@ class KendaraanController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, $id)
-    {
+    {  
+
+        $kendaraan = Kendaraan::findOrFail($id);
+
         try {
             $kendaraan = Kendaraan::findOrFail($id);
             
@@ -169,7 +182,7 @@ class KendaraanController extends Controller
             
             return $this->successResponse(null, 'Kendaraan berhasil dihapus');
         } catch (\Exception $e) {
-            return $this->errorResponse('Gagal menghapus kendaraan', null, 500);
+            return $this->errorResponse('Kendarran dengan id tersebut tidak di temukan', null, 404);
         }
     }
 

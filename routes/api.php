@@ -51,7 +51,7 @@ Route::prefix('admin')->group(function () {
         Route::get('kendaraan', [KendaraanController::class, 'index']);
         Route::get('kendaraan/{id}', [KendaraanController::class, 'show']);
         Route::post('kendaraan', [KendaraanController::class, 'store']);
-        Route::put('kendaraan/{id}', [KendaraanController::class, 'update']);
+        Route::post('kendaraan/{id}', [KendaraanController::class, 'update']);
         Route::delete('kendaraan/{id}', [KendaraanController::class, 'destroy']);
 
          // Rute manajemen pesanan perbaikan
