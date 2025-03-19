@@ -18,22 +18,23 @@ import Input from "../components/form/input/InputField";
 import Label from "../components/form/Label";
 import Select from "../components/form/Select";
 import TextArea from "../components/form/input/TextArea";
-import { createOrderMutationAtom, deleteOrderMutationAtom, updateOrderMutationAtom } from "../atoms/mutations/ordersMutation";
+import {
+  createOrderMutationAtom,
+  deleteOrderMutationAtom,
+  updateOrderMutationAtom,
+} from "../atoms/mutations/ordersMutation";
 import { vehiclesQueryAtom } from "../atoms/queries/vehiclesQuery";
 
-
-
 function getStatus(value: string) {
-  switch(value) {
+  switch (value) {
     case "menunggu":
-      return "bg-blue-500 text-white"
+      return "bg-blue-500 text-white";
     case "proses":
-      return "bg-yellow-500 text-white"
+      return "bg-yellow-500 text-white";
     case "selesai":
-      return "bg-green-500 text-white"
+      return "bg-green-500 text-white";
     case "batal":
-      return "bg-red-500 text-white"
-
+      return "bg-red-500 text-white";
   }
 }
 
@@ -46,47 +47,92 @@ export default function Orders() {
   const [modalType, setModalType] = useState("");
 
   const [{ mutate: createOrder }] = useAtom(createOrderMutationAtom);
-  const [{ mutate: updateOrder }] = useAtom(updateOrderMutationAtom)
-  const [{ mutate: deleteOrder }] = useAtom(deleteOrderMutationAtom)
+  const [{ mutate: updateOrder }] = useAtom(updateOrderMutationAtom);
+  const [{ mutate: deleteOrder }] = useAtom(deleteOrderMutationAtom);
 
-  const [selectedInstance, setSelectedInstance] = useState({})
-
+  const [selectedInstance, setSelectedInstance] = useState({});
 
   const handleActionPress = (type, instance) => {
-    setModalType(type)
-    setSelectedInstance(instance)
-  }
+    setModalType(type);
+    setSelectedInstance(instance);
+  };
 
   const columns: ColumnDef<typeof orderQuery>[] = [
     {
       accessorKey: "kendaraan.nama_kendaraan",
       header: "Nama Kendaraan",
       cell: ({ getValue }) =>
-        isPending ? <Skeleton width={100} height={10} className="bg-gray-500 animate-pulse"  /> : (getValue() as string),
+        isPending ? (
+          <Skeleton
+            width={100}
+            height={10}
+            className="bg-gray-500 animate-pulse"
+          />
+        ) : (
+          (getValue() as string)
+        ),
     },
     {
       accessorKey: "kendaraan.plat_nomor",
       header: "Plat Nomor",
       cell: ({ getValue }) =>
-        isPending ? <Skeleton width={100} height={10} className="bg-gray-500 animate-pulse"  /> : (getValue() as string),
+        isPending ? (
+          <Skeleton
+            width={100}
+            height={10}
+            className="bg-gray-500 animate-pulse"
+          />
+        ) : (
+          (getValue() as string)
+        ),
     },
     {
       accessorKey: "tanggal_perbaikan",
       header: "Tanggal Perbaikan",
       cell: ({ getValue }) =>
-        isPending ? <Skeleton width={100} height={10} className="bg-gray-500 animate-pulse"  /> : (getValue() as string),
+        isPending ? (
+          <Skeleton
+            width={100}
+            height={10}
+            className="bg-gray-500 animate-pulse"
+          />
+        ) : (
+          (getValue() as string)
+        ),
     },
     {
       accessorKey: "status",
       header: "Status",
       cell: ({ getValue }) =>
-        isPending ? <Skeleton width={100} height={10} className="bg-gray-500 animate-pulse"  /> : <div className={`py-1 rounded-md capitalize ${getStatus(getValue() as string)}`}>{getValue() as string}</div>,
+        isPending ? (
+          <Skeleton
+            width={100}
+            height={10}
+            className="bg-gray-500 animate-pulse"
+          />
+        ) : (
+          <div
+            className={`py-1 rounded-md capitalize ${getStatus(
+              getValue() as string
+            )}`}
+          >
+            {getValue() as string}
+          </div>
+        ),
     },
     {
       accessorKey: "keterangan",
       header: "Keterangan",
       cell: ({ getValue }) =>
-        isPending ? <Skeleton width={100} height={10} className="bg-gray-500 animate-pulse"  /> : (getValue() as string),
+        isPending ? (
+          <Skeleton
+            width={100}
+            height={10}
+            className="bg-gray-500 animate-pulse"
+          />
+        ) : (
+          (getValue() as string)
+        ),
     },
     {
       id: "actions",
@@ -149,9 +195,9 @@ export default function Orders() {
   };
 
   const handleRemove = () => {
-    setInput("")
-    setIconActive(false)
-  }
+    setInput("");
+    setIconActive(false);
+  };
 
   return (
     <div>
@@ -176,7 +222,9 @@ export default function Orders() {
         title={modalType == "create" ? "Buat Pesanan" : "Edit Pesanan"}
         mutation={modalType == "create" ? createOrder : updateOrder}
         state={modalType == "create" || modalType == "update"}
-        selectedInstance={(modalType == "update" &&  selectedInstance) ? selectedInstance : {}}
+        selectedInstance={
+          modalType == "update" && selectedInstance ? selectedInstance : {}
+        }
         method={modalType.toUpperCase()}
       >
         <div>
@@ -189,11 +237,18 @@ export default function Orders() {
               options={
                 vehicleQuery
                   ? vehicleQuery.data.map((vehicle) => {
-                      return { label: `${vehicle.nama_kendaraan} - ${vehicle.plat_nomor}`, value: vehicle.id };
+                      return {
+                        label: `${vehicle.nama_kendaraan} - ${vehicle.plat_nomor}`,
+                        value: vehicle.id,
+                      };
                     })
                   : []
               }
-              defaultValue={(modalType == "update" && selectedInstance) ? selectedInstance.kendaraan_pelanggan_id : ""}
+              defaultValue={
+                modalType == "update" && selectedInstance
+                  ? selectedInstance.kendaraan_pelanggan_id
+                  : ""
+              }
             />
           </div>
         </div>
@@ -204,7 +259,11 @@ export default function Orders() {
               type="date"
               className="min-w-[300px]"
               name="tanggal_perbaikan"
-              defaultValue={(modalType == "update" && selectedInstance) ? selectedInstance.tanggal_perbaikan : ""}
+              defaultValue={
+                modalType == "update" && selectedInstance
+                  ? selectedInstance.tanggal_perbaikan
+                  : ""
+              }
             />
           </div>
         </div>
@@ -215,20 +274,42 @@ export default function Orders() {
               type="date"
               className="min-w-[300px]"
               name="tanggal_selesai"
-              defaultValue={(modalType == "update" && selectedInstance) ? selectedInstance.tanggal_selesai : ""}
+              defaultValue={
+                modalType == "update" && selectedInstance
+                  ? selectedInstance.tanggal_selesai
+                  : ""
+              }
             />
           </div>
         </div>
         <div>
           <Label>Tanggal Masuk</Label>
           <div className="relative">
-            <Input type="date" className="min-w-[300px]" name="tanggal_masuk" defaultValue={(modalType == "update" && selectedInstance) ? selectedInstance.tanggal_masuk : ""}/>
+            <Input
+              type="date"
+              className="min-w-[300px]"
+              name="tanggal_masuk"
+              defaultValue={
+                modalType == "update" && selectedInstance
+                  ? selectedInstance.tanggal_masuk
+                  : ""
+              }
+            />
           </div>
         </div>
         <div>
           <Label>Total Biaya</Label>
           <div className="relative">
-            <Input type="number" className="min-w-[300px]" name="total_biaya" defaultValue={(modalType == "update" && selectedInstance) ? selectedInstance.total_biaya : ""}/>
+            <Input
+              type="number"
+              className="min-w-[300px]"
+              name="total_biaya"
+              defaultValue={
+                modalType == "update" && selectedInstance
+                  ? selectedInstance.total_biaya
+                  : ""
+              }
+            />
           </div>
         </div>
         <div>
@@ -243,7 +324,11 @@ export default function Orders() {
                 { label: "Batal", value: "batal" },
               ]}
               placeholder="Pilih Status"
-              defaultValue={(modalType == "update" && selectedInstance) ? selectedInstance.status : ""}
+              defaultValue={
+                modalType == "update" && selectedInstance
+                  ? selectedInstance.status
+                  : ""
+              }
             />
           </div>
         </div>
@@ -254,7 +339,11 @@ export default function Orders() {
               name="keterangan"
               placeholder=""
               disabled={false}
-              defaultValue={(modalType == "update" && selectedInstance) ? selectedInstance.keterangan : ""}
+              defaultValue={
+                modalType == "update" && selectedInstance
+                  ? selectedInstance.keterangan
+                  : ""
+              }
             ></TextArea>
           </div>
         </div>
@@ -263,13 +352,31 @@ export default function Orders() {
       {/* update and create modal */}
 
       {/* Tables */}
-      <div className="w-full flex justify-end gap-x-6">
+      <div className="w-full flex justify-end items-center gap-x-6">
         <button
           onClick={() => setModalType("create")}
           className="bg-brand-600 text-white rounded-md py-2 px-2 text-sm"
         >
           Tambah Pesanan
         </button>
+        {/* <div className="relative">
+          <button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              className="size-6 dark:stroke-white"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 13.5V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m12-3V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m-6-9V3.75m0 3.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 9.75V10.5"
+              />
+            </svg>
+          </button>
+            <div className="absolute left-0 -bottom-14 bg-white min-w-[200px] rounded-md px-4 py-4">p</div>
+        </div> */}
         <div className="bg-white rounded-md py-2 px-3 flex gap-x-4 items-center">
           <input
             type="text"

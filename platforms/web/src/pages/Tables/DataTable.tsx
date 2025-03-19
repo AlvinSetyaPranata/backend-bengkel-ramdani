@@ -5,6 +5,7 @@ import {
   SortingState,
   getSortedRowModel,
   getCoreRowModel,
+  getFilteredRowModel,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -47,6 +48,7 @@ const DataTable = <D,>({
     columns,
     state: { sorting },
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
   });
