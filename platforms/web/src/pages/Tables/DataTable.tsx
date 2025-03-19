@@ -22,19 +22,18 @@ type paginationType = {
   halaman_sekarang: number,
   halaman_terakhir: number,
   dari: number,
-  sampai: number
+  sampai: number,
 }
 
 interface DataTableProps<D>{
   data: D[],
   columns: ColumnDef<D>[],
   pagination: paginationType,
+  page: number,
+  pageSetter: (page: string) => void
 }
 
-const DataTable = <D,>({ data, columns, pagination }: DataTableProps<D>) => {
-  const [currentPage, setCurrentPage] = useState(1)
-
-  const [selectedItem, setSelectedItem] = useAtom(selectedItemAtom)
+const DataTable = <D,>({ data, columns, pagination, page, pageSetter }: DataTableProps<D>) => {
 
   const table = useReactTable({
     data,
@@ -95,16 +94,16 @@ const DataTable = <D,>({ data, columns, pagination }: DataTableProps<D>) => {
       <div className="flex justify-center gap-4 mt-4">
         <button
           className="px-4 py-2 dark:bg-brand-600  dark:text-white rounded hover:cursor-pointer text-sm"
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
+          onClick={() => pageSetter((prev) => Math.max(prev - 1, 1))}
+          disabled={page === 1}
         >
           Previous
         </button>
         <span className="px-4 py-2 dark:text-gray-400">{pagination.halaman_sekarang} / {pagination.halaman_terakhir}</span>
         <button
           className="px-4 py-2 dark:bg-brand-600  dark:text-white rounded hover:cursor-pointer text-sm"
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, pagination.total))}
-          disabled={currentPage === pagination.total}
+          onClick={() => pageSetter((prev) => Math.min(prev + 1, pagination.total))}
+          disabled={page === pagination.total}
         >
           Next
         </button>
