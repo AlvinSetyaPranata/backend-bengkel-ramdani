@@ -28,11 +28,17 @@ const createOrderMutationAtom = atomWithMutation((get) => {
         },
       });
 
+      const content = await response.json();
+
+      if (response.status == 422) {
+        toast.error(content.errors, { position: 'top-right' })
+      }
+
       if (!response.ok) {
         throw new Error("Failed to create order");
       }
 
-      return response.json();
+      return content;
     },
 
     onSuccess: () => {
@@ -109,8 +115,8 @@ const deleteOrderMutationAtom = atomWithMutation((get) => {
       const content = await response.json()
 
       if (response.status == 422) {
-        console.log(content)
         toast.error(content.errors, { position: 'top-right' })
+        return
       }
 
       if (!response.ok) {

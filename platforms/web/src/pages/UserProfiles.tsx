@@ -7,7 +7,7 @@ import Button from "../components/ui/button/Button";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faX } from "@fortawesome/free-solid-svg-icons";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import {
   ModalWithForm,
   ModalWithConfirmation,
@@ -20,7 +20,9 @@ import Select from "../components/form/Select";
 import { vehiclesQueryAtom } from "../atoms/queries/vehiclesQuery";
 import { usersQueryAtom } from "../atoms/queries/usersQuery";
 import FileInput from "../components/form/input/FileInput";
-import { registerVehicleMutationAtom } from "../atoms/mutations/vehiclesMutation";
+
+import { deleteUserMutationAtom, updateUserMutationAtom } from "../atoms/mutations/usersMutation";
+import ImageField from "../components/form/input/ImageField";
 
 
 
@@ -38,9 +40,18 @@ const Users: React.FC = () => {
   const [input, setInput] = useState("");
   const [modalType, setModalType] = useState("");
 
-  const [{ mutate: registerVehicle }] = useAtom(registerVehicleMutationAtom);
+  const [selectedInstance, setSelectedInstance] = useState({})
+
+
+  const [{ mutate: updateUser }] = useAtom(updateUserMutationAtom);
+  const [{ mutate: deleteUser }] = useAtom(deleteUserMutationAtom)
 
   const [{ data: userData }] = useAtom(usersQueryAtom);
+
+  const handleActionButton = (type, instance ) => {
+    setModalType(type)
+    setSelectedInstance(instance)
+  }
 
   const columns: ColumnDef<typeof data>[] = [
     {
@@ -100,7 +111,7 @@ const Users: React.FC = () => {
           <div className="flex gap-x-2 w-full justify-center">
             <Button
               className="bg-blue-500 p-2"
-              onClick={() => setModalType("update")}
+              onClick={() => handleActionButton("update", row.original)}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -119,7 +130,7 @@ const Users: React.FC = () => {
             </Button>
             <Button
               className="bg-red-500 p-2"
-              onClick={() => setModalType("delete")}
+              onClick={() => handleActionButton("delete", row.original)}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -169,21 +180,29 @@ const Users: React.FC = () => {
         messege="Apakah anda ingin menghapus pengguna ini?"
         title="Peringatan"
         onOk={() => null}
+        id={selectedInstance ? selectedInstance.id : null}
         onCancel={() => setModalType("")}
         state={modalType == "delete"}
+        mutation={deleteUser}
       />
 
       {/* update and create modal */}
       <ModalWithForm
         onClose={() => setModalType("")}
         title={modalType == "create" ? "Tambahkan Pengguna" : "Edit Pengguna"}
-        mutation={modalType == "create" ? registerVehicle : () => null}
-        state={modalType == "create" || modalType == "update"}
+        mutation={updateUser}
+        method="UPDATE"
+        selectedInstance={selectedInstance ? selectedInstance : {}}
+        state={modalType == "update"}
       >
         <div>
           <Label>Avatar</Label>
           <div className="relative">
-            <FileInput name="avatar" />
+          {(selectedInstance && selectedInstance.avatar) ? (
+              <ImageField name="avatar" src={selectedInstance.avatar} />
+            ) : (
+              <FileInput name="avatar" />
+            )}
           </div>
         </div>
         <div>
@@ -192,8 +211,9 @@ const Users: React.FC = () => {
             <Input
               type="text"
               className="min-w-[300px]"
-              name="nama"
-            />
+              name="name"
+              defaultValue={selectedInstance ? selectedInstance.name : ""}
+              />
           </div>
         </div>
 
@@ -204,6 +224,7 @@ const Users: React.FC = () => {
               options={[{label: "Aktif", value: "active"}, {label: "Tidak Aktif", value: "inactive"}]}
               name="status"
               placeholder="Status"
+              defaultValue={selectedInstance ? selectedInstance.status : ""}
             />
           </div>
         </div>

@@ -121,7 +121,6 @@ const Vehicles: React.FC = () => {
   const onActionClick = (type, instance) => {
     setModalType(type);
     setSelectedData(instance);
-    console.log(instance);
   };
 
   const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -138,10 +137,6 @@ const Vehicles: React.FC = () => {
     setInput("");
     setIconActive(false);
   };
-
-  useEffect(() => {
-    console.log(selectedData ? selectedData.nama_kendaraan : "");
-  }, [selectedData]);
 
   return (
     <div>
@@ -234,7 +229,7 @@ const Vehicles: React.FC = () => {
           <Label>Gambar Kendaraan</Label>
           <div className="relative">
             {modalType == "update" && selectedData && selectedData.gambar_kendaraan ? (
-              <ImageField src={selectedData.gambar_kendaraan} />
+              <ImageField name="avatar" src={selectedData.gambar_kendaraan} />
             ) : (
               <FileInput name="gambar_kendaraan" />
             )}

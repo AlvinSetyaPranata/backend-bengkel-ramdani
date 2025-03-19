@@ -160,13 +160,13 @@ export function ModalWithForm({
    const res = Object.fromEntries(formData.entries())
 
    if (method == "UPDATE") {
-     await mutation({data: res, id: selectedInstance.id}) 
+     await mutation({data: res, id: selectedInstance.id})
     } else {
       await mutation(res)
     }
 
     onClose()
-    setTimeout(() => window.location.reload(), 3000)
+    // setTimeout(() => window.location.reload(), 3000)
 
   }
 

@@ -33,6 +33,14 @@ const registerVehicleMutationAtom = atomWithMutation((get) => {
         },
       });
 
+      const content = await response.json()
+
+      if (response.status == 409) {
+        toast.error(content.errors, { position: 'top-right' })
+        return
+      }
+
+
       if (!response.ok) {
         console.log(response)
 
@@ -41,7 +49,7 @@ const registerVehicleMutationAtom = atomWithMutation((get) => {
       }
       
       toast.success("Berhasil menambahkan kendaraan")
-      return response.json();
+      return content;
     },
 
     onSettled: () => {
@@ -79,6 +87,13 @@ const updateVehicleMutationAtom = atomWithMutation((get) => {
         },
       });
 
+      const content = await response.json()
+
+      if (response.status == 422) {
+        toast.error(content.errors, { position: 'top-right' })
+        return
+      }
+
       if (!response.ok) {
         console.log(response);
         toast.error("Gagal dalam memperbarui kendaraan");
@@ -86,10 +101,11 @@ const updateVehicleMutationAtom = atomWithMutation((get) => {
       }
 
       toast.success("Berhasil memperbarui kendaraan");
-      return response.json();
+      return content;
     },
 
     onSettled: () => {
+      console.log("Success")
       queryClient.invalidateQueries({ queryKey: ["vehicles"] });
     },
   };
