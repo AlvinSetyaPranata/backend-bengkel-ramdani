@@ -29,8 +29,11 @@ function getStatus(value: string) {
       return "bg-blue-500 text-white"
     case "proses":
       return "bg-yellow-500 text-white"
-      case "selesai":
+    case "selesai":
       return "bg-green-500 text-white"
+    case "batal":
+      return "bg-red-500 text-white"
+
   }
 }
 
@@ -232,10 +235,12 @@ export default function Orders() {
           <Label>Status</Label>
           <div className="relative">
             <Select
+              name="status"
               options={[
                 { label: "Selesai", value: "selesai" },
-                { label: "Dalam Perbaikan", value: "dalam perbaikan" },
-                { label: "Dalam Antrian", value: "dalam antrian" },
+                { label: "Dalam Perbaikan", value: "proses" },
+                { label: "Dalam Antrian", value: "menunggu" },
+                { label: "Batal", value: "batal" },
               ]}
               placeholder="Pilih Status"
               defaultValue={(modalType == "update" && selectedInstance) ? selectedInstance.status : ""}

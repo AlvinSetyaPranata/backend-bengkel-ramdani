@@ -1,4 +1,4 @@
-import { atomWithMutation, queryClientAtom } from "jotai-tanstack-query";
+import { atomWithMutation } from "jotai-tanstack-query";
 import { tokenAtom } from "../auth";
 import QueryClientAtom from "../query";
 import { toast } from "react-toastify";
@@ -10,7 +10,7 @@ const registerVehicleMutationAtom = atomWithMutation((get) => {
 
   if (!token) {
     return {
-      mutationKey: ["vehicles"],
+      mutationKey: ["createVehicle"],
       mutationFn: async () => {
         throw new Error("Token is missing. Cannot create an order.");
       },
@@ -18,7 +18,7 @@ const registerVehicleMutationAtom = atomWithMutation((get) => {
   }
 
   return {
-    mutationKey: ["vehicles"],
+    mutationKey: ["createVehicle"],
     mutationFn: async (data: Record<string, any>[]) => {
     
       const formData = new FormData();
@@ -43,12 +43,9 @@ const registerVehicleMutationAtom = atomWithMutation((get) => {
       toast.success("Berhasil menambahkan kendaraan")
       return response.json();
     },
-    staleTime: 0,
-    queryClient: get(queryClientAtom),
 
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["vehicles"]});
-      queryClient.invalidateQueries({ queryKey: ["vehicles", null]});
     },
 
   };
@@ -61,7 +58,7 @@ const updateVehicleMutationAtom = atomWithMutation((get) => {
 
   if (!token) {
     return {
-      mutationKey: ["vehicles"],
+      mutationKey: ["updateVehicles"],
       mutationFn: async () => {
         throw new Error("Token is missing. Cannot update the vehicle.");
       },
@@ -69,7 +66,7 @@ const updateVehicleMutationAtom = atomWithMutation((get) => {
   }
 
   return {
-    mutationKey: ["vehicles"],
+    mutationKey: ["updateVehicles"],
     mutationFn: async ({ data, id }: { data: Record<string, any>; id: string }) => {
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => formData.append(key, value));
@@ -94,7 +91,6 @@ const updateVehicleMutationAtom = atomWithMutation((get) => {
 
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["vehicles"] });
-      queryClient.invalidateQueries({ queryKey: ["vehicles", null] });
     },
   };
 });
@@ -106,7 +102,7 @@ const deleteVehicleMutationAtom = atomWithMutation((get) => {
 
   if (!token) {
     return {
-      mutationKey: ["vehicles"],
+      mutationKey: ["deleteVehicles"],
       mutationFn: async () => {
         throw new Error("Token is missing. Cannot update the vehicle.");
       },
@@ -114,7 +110,7 @@ const deleteVehicleMutationAtom = atomWithMutation((get) => {
   }
 
   return {
-    mutationKey: ["vehicles"],
+    mutationKey: ["deleteVehicles"],
     mutationFn: async ({ id }: { id: string }) => {
       const response = await fetch(`${import.meta.env.VITE_BASE_API_URL}/kendaraan/${id}`, {
         method: "DELETE",
@@ -135,7 +131,7 @@ const deleteVehicleMutationAtom = atomWithMutation((get) => {
 
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["vehicles"] });
-      queryClient.invalidateQueries({ queryKey: ["vehicles", null] });
+
     },
   };
 })

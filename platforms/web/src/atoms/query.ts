@@ -2,7 +2,13 @@ import { QueryClient } from "@tanstack/query-core";
 import { atom } from "jotai";
 
 
-const queryClient = new QueryClient()
+export const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: 0
+        }
+    }
+})
 
 const QueryClientAtom = atom(queryClient);
 

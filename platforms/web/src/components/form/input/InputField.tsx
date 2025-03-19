@@ -50,7 +50,7 @@ const Input: FC<InputProps> = ({
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => setValue(event.target.value)
 
-  useEffect(() => setValue(defaultValue), [defaultValue])
+  useEffect(() => setValue(defaultValue ? defaultValue : ""), [defaultValue])
 
   return (
     <div className="relative">

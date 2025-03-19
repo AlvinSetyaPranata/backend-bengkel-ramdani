@@ -108,6 +108,7 @@ export function ModalWithConfirmation({
   const okHandler = async () => {
     mutation({ id: id})
     onCancel()
+    setTimeout(() => window.location.reload(), 2000)
   }
 
   return (
@@ -163,8 +164,9 @@ export function ModalWithForm({
     } else {
       await mutation(res)
     }
-    
+
     onClose()
+    setTimeout(() => window.location.reload(), 2000)
 
   }
 
