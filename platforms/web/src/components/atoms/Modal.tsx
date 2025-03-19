@@ -166,7 +166,7 @@ export function ModalWithForm({
     }
 
     onClose()
-    setTimeout(() => window.location.reload(), 2000)
+    setTimeout(() => window.location.reload(), 3000)
 
   }
 
