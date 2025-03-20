@@ -7,7 +7,7 @@ import {
   Text,
   Pressable,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -18,6 +18,7 @@ import { tokenStore } from "@/store/authStore";
 
 export default function login() {
   const router = useRouter();
+  const [visiblePassword, setVisiblePassword] = useState(false)
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Email tidak valid"),
@@ -103,7 +104,7 @@ export default function login() {
                   flexDirection: "row",
                   backgroundColor: "white",
                   alignItems: "center",
-                  paddingRight: 5,
+                  paddingRight: 10,
                   borderRadius: 10,
                 }}
               >
@@ -112,10 +113,12 @@ export default function login() {
                   onChangeText={handleChange("password")}
                   onBlur={handleBlur("password")}
                   placeholder="Enter your password"
-                  secureTextEntry={true}
+                  secureTextEntry={visiblePassword ? false : true}
                   style={styles.input}
                 />
-                <MaterialIcons name="visibility" />
+                <Pressable onPress={() => setVisiblePassword(state => !state)}>
+                  <MaterialIcons name={visiblePassword ? 'visibility-off' : 'visibility'} size={16} />
+                </Pressable>
               </View>
               {touched.password && errors.password && (
                 <Text

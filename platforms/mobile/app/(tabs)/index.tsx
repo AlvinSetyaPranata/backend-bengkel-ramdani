@@ -65,7 +65,7 @@ export default function HomeScreen() {
     {
       accessorKey: "tanggal_selesai",
       header: "Tanggal Selesai",
-      cell: ({ getValue }) => <Text>{getValue() as string}</Text>,
+      cell: ({ getValue }) => <Text>{getValue() ? getValue() as string : "-"}</Text>,
     },
     {
       accessorKey: "status",
