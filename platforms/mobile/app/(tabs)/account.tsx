@@ -91,6 +91,20 @@ export default function LoginScreen() {
             </View>
             <MaterialIcons name="arrow-right" size={24} color="#00000" />
           </TouchableOpacity>
+          <TouchableOpacity style={style.button} onPress={() => navigation.navigate("logout")}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                flexGrow: 1,
+                flexShrink: 1,
+                flexBasis: "0%",
+              }}
+            >
+              <MaterialIcons name="logout" size={20} color="#00000" />
+              <Text style={{ marginLeft: 10 }}>Keluar Akun</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </ThemedView>
     </SafeAreaView>
