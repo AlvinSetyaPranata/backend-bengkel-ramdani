@@ -1,6 +1,6 @@
 import { useAtom } from "jotai";
 import { statisticQueryAtom } from "../../atoms/queries/statisticsQuery";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ApexOptions } from "apexcharts";
 import Chart from "react-apexcharts"
 

@@ -1,8 +1,22 @@
 import PageMeta from "../../components/common/PageMeta";
 import AuthLayout from "./AuthPageLayout";
 import SignInForm from "../../components/auth/SignInForm";
+import { useAtom } from "jotai";
+import { tokenAtom } from "../../atoms/auth";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 
 export default function SignIn() {
+  const navigate = useNavigate();
+  const [token,] = useAtom(tokenAtom);
+
+  useEffect(() => {
+
+    if (token) {
+      navigate("/");
+    }
+  }, []);
+
   return (
     <>
       <PageMeta

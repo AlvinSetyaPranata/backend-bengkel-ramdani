@@ -33,8 +33,10 @@ const createOrderMutationAtom = atomWithMutation((get) => {
       if (response.status == 422) {
         toast.error(content.errors, { position: 'top-right' })
       }
-
+      
       if (!response.ok) {
+        console.log(response)
+        toast.error("Gagal membuat pesanan", { position: 'top-right' })
         throw new Error("Failed to create order");
       }
 
