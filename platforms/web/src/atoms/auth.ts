@@ -1,4 +1,6 @@
-import { atomWithStorage } from "jotai/utils"
+import { atomWithStorage, createJSONStorage } from "jotai/utils"
 
-export const profileAtom = atomWithStorage("profile", null)
-export const tokenAtom = atomWithStorage("token", null)
+const storage = createJSONStorage(() => sessionStorage)
+
+export const profileAtom = atomWithStorage("profile", null, storage)
+export const tokenAtom = atomWithStorage("token", null, storage)

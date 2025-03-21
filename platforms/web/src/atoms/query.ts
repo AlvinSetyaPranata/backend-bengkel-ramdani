@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientConfig } from "@tanstack/query-core";
+import { QueryClient } from "@tanstack/query-core";
 import { atom } from "jotai";
 
 

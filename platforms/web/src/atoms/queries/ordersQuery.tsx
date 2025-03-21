@@ -31,6 +31,8 @@ export const ordersQuertyAtom = atomWithQuery((get) => {
         }
       }).then(
         (res) => {
+          console.log(res)
+
           if (res.status == 401) {
             return [];
           }
