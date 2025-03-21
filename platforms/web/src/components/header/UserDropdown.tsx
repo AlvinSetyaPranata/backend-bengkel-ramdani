@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
@@ -28,9 +27,6 @@ export default function UserDropdown() {
 
     setTimeout(() => navigation("/signin"), 2000)
   }
-
-
-  useEffect(() => console.log(profile), [])
 
   return (
     <div className="relative">

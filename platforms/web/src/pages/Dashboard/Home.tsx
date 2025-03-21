@@ -79,9 +79,9 @@ export default function Home() {
           {/* <!-- Metric Item End --> */}
         </div>
 
-        <div className="col-span-12 space-y-6 xl:col-span-7">
+        {/* <div className="col-span-12 space-y-6 xl:col-span-7">
           <StatisticsChart />
-        </div>
+        </div> */}
       </div>
     </>
   );

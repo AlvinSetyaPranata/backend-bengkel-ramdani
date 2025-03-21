@@ -11,8 +11,7 @@ const Security: React.FC<PropsWithChildren> = ({ children }) => {
     useEffect(() => {
 
         if (!token) {
-            console.log(token)
-            // navigate("/signin")
+            navigate("/signin")
         }
     }, [])
 

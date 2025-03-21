@@ -71,6 +71,10 @@ export default function RootLayout() {
               name="privacyTerms"
               options={{ headerShown: false }}
             />
+            <Stack.Screen
+              name="orderDetail"
+              options={{ headerShown: false }}
+            />
             <Stack.Screen name="+not-found" />
             <Stack.Screen name="login" options={{ headerShown: false }} />
             <Stack.Screen name="register" options={{ headerShown: false }} />

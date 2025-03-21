@@ -1,23 +1,24 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useNavigation } from "expo-router";
+import { useRouter, Href } from "expo-router";
 import { PropsWithChildren } from "react";
 
 
 interface propsType extends  PropsWithChildren {
-  title: string
+  title: string,
+  fallback_screen?: Href
 }
 
-export default function Detail({ title, children }: propsType) {
-  const navigation = useNavigation();
+export default function Detail({ title, children, fallback_screen="/" }: propsType) {
+  const router = useRouter();
 
   return (
     <View
       style={styles.container}
     >
       <View style={styles.header}>
-        <Pressable style={styles.back} onPress={() => navigation.goBack()}>
+        <Pressable style={styles.back} onPress={() => router.canGoBack() ? router.back() : router.navigate(fallback_screen)}>
           <MaterialIcons name="chevron-left" size={22} />
         </Pressable>
         <Text style={styles.title}>{title}</Text>

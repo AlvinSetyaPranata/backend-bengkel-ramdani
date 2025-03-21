@@ -2,38 +2,30 @@ import { ThemedView } from "@/components/ThemedView";
 import { SCREEN_HEIGHT } from "@/utils/constans";
 import { useRouter, useRootNavigationState } from "expo-router";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator, Pressable } from "react-native";
 import { ColumnDef } from "@tanstack/react-table";
 import Datatable from "@/components/Atoms/Datatable";
 import useVehicleQuery from "@/hooks/Queries/useVehiclesQuery";
 import { useStore } from "@tanstack/react-store";
 import { tokenStore } from "@/store/authStore";
 import { useEffect, useState } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
 useVehicleQuery;
 
 export default function HomeScreen() {
   const router = useRouter();
   const navigation = useRootNavigationState();
+
   // const { data, isLoading, error } = useVehicleQuery();
   const [data, setData] = useState({});
 
   const { token } = useStore(tokenStore);
 
-  function getStatusColor(value: string) {
-    switch (value) {
-      case "menunggu":
-        return "bg-blue-500 text-white";
-      case "proses":
-        return "bg-yellow-500 text-white";
-      case "selesai":
-        return "bg-green-500 text-white";
-      case "batal":
-        return "bg-red-500 text-white";
-    }
+  const handleActionClicked = (selectedData) => {
+    router.replace({pathname: "/orderDetail", params: {instance: JSON.stringify(selectedData)} })
   }
 
   useEffect(() => {
-
     const getData = async () => {
       const res = await fetch(
         `${process.env.EXPO_PUBLIC_BASE_API_URL}/pesanan`,
@@ -63,25 +55,20 @@ export default function HomeScreen() {
       cell: ({ getValue }) => <Text>{getValue() as string}</Text>,
     },
     {
-      accessorKey: "tanggal_selesai",
-      header: "Tanggal Selesai",
-      cell: ({ getValue }) => <Text>{getValue() ? getValue() as string : "-"}</Text>,
-    },
-    {
       accessorKey: "status",
       header: "Status",
       cell: ({ getValue }) => (
-        <View
-          style={{
-            paddingVertical: 4,
-            borderRadius: 5,
-            backgroundColor: getStatusColor(getValue() as string),
-          }}
-        >
-          <Text style={{ textTransform: "capitalize", textAlign: "center" }}>
-            {getValue() as string}
-          </Text>
-        </View>
+        <Text style={{ textTransform: "capitalize", textAlign: "center" }}>
+          {getValue() as string}
+        </Text>
+      ),
+    },
+    {
+      header: "Aksi",
+      cell: ({ row }) => (
+        <Pressable onPress={() => handleActionClicked(row.original)}>
+          <MaterialIcons name="chevron-right" size={20} />
+        </Pressable>
       ),
     },
   ];
@@ -93,7 +80,7 @@ export default function HomeScreen() {
         return;
       }
     }
-  }, [navigation.key])
+  }, [navigation.key]);
 
   return (
     <SafeAreaProvider>
