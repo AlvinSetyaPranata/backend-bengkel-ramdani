@@ -34,6 +34,9 @@ export default function Datatable<T>({ columns, data } : propsType<T>) {
       <FlatList
         data={table.getRowModel().rows}
         keyExtractor={(row) => row.id}
+        ListEmptyComponent={
+          <Text style={{ textAlign: 'center'}}>Anda belum membuat pesanan</Text>
+        }
         renderItem={({ item: row }) => (
           <View style={styles.row}>
             {row.getVisibleCells().map((cell) => (

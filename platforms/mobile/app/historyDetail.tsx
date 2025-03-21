@@ -1,12 +1,13 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { SCREEN_WIDTH } from "@/utils/constans";
-import { useNavigation } from "expo-router";
+import { useLocalSearchParams, } from "expo-router";
 import Detail from "@/components/Molecules/Detail";
 
 export default function historyDetail() {
-  const navigation = useNavigation();
+  const { instance } = useLocalSearchParams();
+
 
   return (
     <Detail title="Nota Pembayaran">
@@ -48,30 +49,30 @@ export default function historyDetail() {
           <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
             ID Pesanan
           </Text>
-          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>1</Text>
+          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>{instance.id || ""}</Text>
         </View>
         <View style={styles.detailWrapper}>
           <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
-            Metode Pembayaran
+            Tanggal Masuk
           </Text>
           <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
-            Cash
-          </Text>
-        </View>
-        <View style={styles.detailWrapper}>
-          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
-            Waktu Pembayaran
-          </Text>
-          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
-            2022-02-01
+            {instance.tanggal_masuk || ""}
           </Text>
         </View>
         <View style={styles.detailWrapper}>
           <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
-            Nama Pengguna
+            Tanggal Selesai
           </Text>
           <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
-            Alvin Setya Pra...
+            {instance.tanggal_selesai || ""}
+          </Text>
+        </View>
+        <View style={styles.detailWrapper}>
+          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
+            Tanggal Perbaikan
+          </Text>
+          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
+            {instance.tanggal_perbaikan || ""}
           </Text>
         </View>
       </View>

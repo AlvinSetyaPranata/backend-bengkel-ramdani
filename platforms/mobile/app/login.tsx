@@ -11,14 +11,14 @@ import React, { useState } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
 import { useStore } from "@tanstack/react-store";
 import { tokenStore } from "@/store/authStore";
 
 export default function login() {
   const router = useRouter();
-  const [visiblePassword, setVisiblePassword] = useState(false)
+  const [visiblePassword, setVisiblePassword] = useState(false);
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Email tidak valid"),
@@ -48,12 +48,18 @@ export default function login() {
               }
             );
             const resData = await response.json();
-
+            
             if (!response.ok) {
-              alert(resData.pesan)
-              return
-            }
+              const fieldsError: Record<string, string> = {}
 
+              Object.entries(resData).map(([key, value]) => {
+                fieldsError[key] = value[0]
+              })
+
+
+              alert(resData.pesan);
+              return;
+            }
 
             alert("Sukses");
             tokenStore.setState(() => ({ token: resData.data.token }));
@@ -116,8 +122,13 @@ export default function login() {
                   secureTextEntry={visiblePassword ? false : true}
                   style={styles.input}
                 />
-                <Pressable onPress={() => setVisiblePassword(state => !state)}>
-                  <MaterialIcons name={visiblePassword ? 'visibility-off' : 'visibility'} size={16} />
+                <Pressable
+                  onPress={() => setVisiblePassword((state) => !state)}
+                >
+                  <MaterialIcons
+                    name={visiblePassword ? "visibility-off" : "visibility"}
+                    size={16}
+                  />
                 </Pressable>
               </View>
               {touched.password && errors.password && (
@@ -139,7 +150,7 @@ export default function login() {
                   backgroundColor: "black",
                   borderRadius: 10,
                   paddingVertical: 10,
-                  marginTop: 30,
+                  marginTop: 40,
                 }}
                 onPress={() => handleSubmit()}
               >
@@ -152,6 +163,27 @@ export default function login() {
                 >
                   Masuk
                 </Text>
+              </Pressable>
+              <Pressable
+                style={{
+                  backgroundColor: "white",
+                  borderRadius: 10,
+                  paddingVertical: 10,
+                  marginTop: 10,
+                }}
+                onPress={() => handleSubmit()}
+              >
+                <Link href="/register">
+                  <Text
+                    style={{
+                      color: "black",
+                      fontWeight: "500",
+                      textAlign: "center",
+                    }}
+                  >
+                    Daftar
+                  </Text>
+                </Link>
               </Pressable>
             </View>
           )}
