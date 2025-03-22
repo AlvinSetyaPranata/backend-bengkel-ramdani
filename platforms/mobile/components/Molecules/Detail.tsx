@@ -35,7 +35,8 @@ export default function Detail({ title, children, fallback_screen="/" }: propsTy
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: '10%'
+    paddingTop: '5%',
+    backgroundColor: 'white'
   },
 
   back: {

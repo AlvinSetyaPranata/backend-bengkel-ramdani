@@ -1,13 +1,24 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { SCREEN_WIDTH } from "@/utils/constans";
-import { useLocalSearchParams, } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import Detail from "@/components/Molecules/Detail";
+import { clampString, formatCurrency } from "@/utils/strings";
+import { console_dev } from "@/utils/development";
 
 export default function historyDetail() {
   const { instance } = useLocalSearchParams();
 
+  const [data, setData] = useState<Record<string, string>>();
+
+  useEffect(() => {
+    if (instance) {
+      setData(JSON.parse(instance as string));
+    }
+  }, []);
+
+  // useEffect(() => console_dev(data.kendaraan.plat_nomor), [data])
 
   return (
     <Detail title="Nota Pembayaran">
@@ -30,7 +41,7 @@ export default function historyDetail() {
             color: "#636363",
           }}
         >
-          Lunas
+          {data?.status ?? "Tidak diketauhii"}
         </Text>
         <Text
           style={{
@@ -40,7 +51,7 @@ export default function historyDetail() {
             color: "black",
           }}
         >
-          RP. 20.000
+          {formatCurrency(data?.total_biaya ?? "0")}
         </Text>
       </View>
 
@@ -49,30 +60,33 @@ export default function historyDetail() {
           <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
             ID Pesanan
           </Text>
-          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>{instance.id || ""}</Text>
+          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
+            {clampString(data?.id ?? "-")}
+          </Text>
+        </View>
+        <View style={styles.detailWrapper}>
+          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
+            Nama Kendaraan
+          </Text>
+          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
+            {(data?.kendaraan as unknown as { nama_kendaraan: string })
+              ?.nama_kendaraan ?? ""}
+          </Text>
+        </View>
+        <View style={styles.detailWrapper}>
+          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
+            Plat Nomor
+          </Text>
+          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
+            {data ? (data?.kendaraan as unknown as { plat_nomor: string }).plat_nomor : ""}
+          </Text>
         </View>
         <View style={styles.detailWrapper}>
           <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
             Tanggal Masuk
           </Text>
           <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
-            {instance.tanggal_masuk || ""}
-          </Text>
-        </View>
-        <View style={styles.detailWrapper}>
-          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
-            Tanggal Selesai
-          </Text>
-          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
-            {instance.tanggal_selesai || ""}
-          </Text>
-        </View>
-        <View style={styles.detailWrapper}>
-          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
-            Tanggal Perbaikan
-          </Text>
-          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
-            {instance.tanggal_perbaikan || ""}
+            {data?.tanggal_masuk ?? ""}
           </Text>
         </View>
       </View>
@@ -85,7 +99,7 @@ export default function historyDetail() {
           position: "absolute",
           bottom: 0,
           left: 0,
-          paddingVertical: 10
+          paddingVertical: 10,
         }}
       >
         <Pressable style={styles.download}>
@@ -118,7 +132,7 @@ const styles = StyleSheet.create({
     borderColor: "#8c8c8c",
     rowGap: 15,
     paddingVertical: 20,
-    marginTop: 20
+    marginTop: 20,
   },
 
   detailWrapper: {

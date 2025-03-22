@@ -1,29 +1,29 @@
-import { Router, useNavigation } from "expo-router";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Href, useNavigation, useRouter } from "expo-router";
+import { useEffect } from "react";
 import { Pressable, Text, View } from "react-native";
 
 const ListItem = ({
   id,
   title,
   desc,
-  span,
   instance,
   href,
 }: {
   id: string;
   title: string;
   desc: string;
-  span: string;
   instance: unknown,
-  href: Router;
+  href: Href | any;
 }) => {
-  const navigation = useNavigation();
+  const navigation = useRouter();
 
-  const handleClick = (id: string, name: string, price: string) =>
-    navigation.navigate(href, { instance: instance })
+  const handleClick = () =>{
+    navigation.navigate({ pathname: href, params: { instance: JSON.stringify(instance) }})}
   
   return (
       <Pressable
-        onPress={() => handleClick(id)}
+        onPress={handleClick}
         style={{
           padding: 10,
           borderBottomWidth: 1,
@@ -38,14 +38,7 @@ const ListItem = ({
           <Text style={{ fontSize: 17, fontWeight: "500" }}>{title}</Text>
           <Text style={{ fontSize: 12, marginTop: 6 }}>{desc}</Text>
         </View>
-        <Text
-          style={{
-            fontSize: 14,
-            color: "black",
-          }}
-        >
-          {span}
-        </Text>
+        <MaterialIcons name="chevron-right" size={18}/>
       </Pressable>
     );
 };

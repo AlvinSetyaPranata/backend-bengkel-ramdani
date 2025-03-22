@@ -14,7 +14,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Link, useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
 import { useStore } from "@tanstack/react-store";
-import { tokenStore } from "@/store/authStore";
+import { profileStore, tokenStore } from "@/store/authStore";
 
 export default function login() {
   const router = useRouter();
@@ -63,6 +63,7 @@ export default function login() {
 
             alert("Sukses");
             tokenStore.setState(() => ({ token: resData.data.token }));
+            profileStore.setState(() => (resData.data.user))
 
             setTimeout(() => {
               router.push("/");

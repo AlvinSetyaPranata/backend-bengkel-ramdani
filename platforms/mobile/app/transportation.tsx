@@ -1,13 +1,12 @@
-import { StyleSheet } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import Detail from "@/components/Molecules/Detail";
 import FloatButton from "@/components/Atoms/FloatButton";
-import Datatable from "@/components/Atoms/Datatable";
 import { createColumnHelper } from "@tanstack/react-table";
-import useVehicleQuery from "@/hooks/Queries/useVehiclesQuery";
 import { useStore } from "@tanstack/react-store";
 import { tokenStore } from "@/store/authStore";
 import { useRootNavigationState, useRouter } from "expo-router";
+import ListItem from "@/components/Atoms/ListItem";
 
 
 export default function Transportation() {
@@ -17,7 +16,7 @@ export default function Transportation() {
   const navigation = useRootNavigationState();
 
   
-  const [data, setData] = useState({})
+  const [data, setData] = useState<Record<string, string>[]>([{}]);
 
   useEffect(() => {
 
@@ -29,8 +28,6 @@ export default function Transportation() {
     }
 
     const getData = async () => {
-
-
       const res = await fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/kendaraan`, { headers: {
         Authorization: `Bearer ${token}`
       }});
@@ -41,29 +38,28 @@ export default function Transportation() {
     };
 
     getData();
+
   }, []);
 
-
-  const columns = [
-    columnHelper.accessor("nama_kendaraan", {
-      header: "Nama Kendaraan",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("plat_nomor", {
-      header: "Plat Nomor",
-      cell: (info) => info.getValue(),
-    }),
-    columnHelper.accessor("warna", {
-      header: "Warna",
-      cell: (info) => info.getValue(),
-    }),
-  ];
 
   return (
     <Detail title="Data Transportasi">
       <FloatButton link="/addTransportation" />
 
-      <Datatable data={data || []} columns={columns} />
+      <FlatList
+        data={data}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <ListItem
+            key={item.id}
+            instance={item}
+            id={item.id}
+            href="/transportationDetail"
+            title={item.nama_kendaraan}
+            desc={item.plat_nomor}
+          />
+        )}
+      />
   
     </Detail>
   );

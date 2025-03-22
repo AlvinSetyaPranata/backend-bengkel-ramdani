@@ -1,44 +1,59 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect } from 'react'
-import { useLocalSearchParams } from 'expo-router'
-import Form from '@/components/Molecules/Form'
-import { z } from 'zod'
-import Detail from '@/components/Molecules/Detail'
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { useLocalSearchParams } from "expo-router";
+import Form from "@/components/Molecules/Form";
+import { z } from "zod";
+import * as Yup from "yup";
+import Detail from "@/components/Molecules/Detail";
+import { Formik } from "formik";
+import { useStore } from "@tanstack/react-store";
+import { tokenStore } from "@/store/authStore";
 
 export default function transporatationDetail() {
-    const {__EXPO_ROUTER_key, ...data} = useLocalSearchParams()
+  const { instance } = useLocalSearchParams();
 
-    const schema = z.object({
-      merek_kendaraan: z.string().min(1, "Harap diisi"),
-      warna_kendaraan: z.string().min(1, "Harap diisi"),
-      plat_nomor: z.string().min(1, "Harap diisi"),
-      gambar_kendaraan: z.string().min(1, "Harap diisi"),
-      tahun_produksi: z.string().min(1, "Harap diisi")
-    })
+  const [data, setData] = useState()
+  const excluded_field = ["user", "is_owner", "user_id"]
 
-    const structure = {
-      merek_kendaraan: ["", "Merek Kendaraan", "merek_kendaraan"],
-      warna_kendaraan: ["", "Warna Kendaraan", "warna_kendaraan"],
-      plat_nomor: ["", "Plat Nomor", "plat_nomor"],
-      gambar_kendaraan: ["image", "Gambar Kendaraan", "gambar_kendaraan"],
-      tahun_produksi: ["datetime", "Tahun Produksi", "tahun_produksi"]
+  useEffect(() => {
+    if (instance) {
+      setData(JSON.parse((instance as string)))
     }
-
-    // useEffect(() => console.log(data), [])
+  }, [])
 
   return (
-    <Detail title='Edit Transportasi'>
+    <Detail title="Detail Transportasi">
       <View style={styles.content}>
-      <Form structure={structure} schema={schema} defaultValue={data} addButtonTitle='Perbarui Transportasi'/>
+        <View style={styles.wrapper}>
+          {Object.entries(data)
+            .filter(([key,]) => !excluded_field.includes(key))
+            .map(([key, value], index) => (
+              <View style={styles.field} key={index}>
+                <Text style={styles.title}>{key}</Text>
+                <Text>{value}</Text>
+              </View>
+            ))}
+        </View>
       </View>
     </Detail>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
-
   content: {
-    paddingVertical: 10
-  }
+    paddingVertical: 10,
+  },
 
-})
+  wrapper: {
+    rowGap: 20,
+  },
+
+  field: {
+    rowGap: 10,
+  },
+
+  title: {
+    fontWeight: "500",
+    fontSize: 16,
+  },
+});

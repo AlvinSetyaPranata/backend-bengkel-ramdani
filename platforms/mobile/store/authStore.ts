@@ -13,6 +13,16 @@ export const tokenStore = new Store({
     token: '',
 });
 
+export const profileStore = new Store( {
+  id: "",
+  name: "",
+  email: "",
+  avatar: null,
+  status: "",
+  created_at: "",
+  updated_at: ""
+});
+
 (async () => {
     const initialState = await loadState();
     tokenStore.setState(initialState);

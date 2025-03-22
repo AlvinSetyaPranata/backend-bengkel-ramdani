@@ -11,23 +11,37 @@ import { SCREEN_HEIGHT } from "@/utils/constans";
 import { ThemedText } from "@/components/ThemedText";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
+import { useStore } from "@tanstack/react-store";
+import { profileStore } from "@/store/authStore";
 
 const IMAGE_TEST = require("@/assets/images/account-test.jpg");
 
 export default function LoginScreen() {
 
   const navigation = useNavigation()
+  
+  const { name, avatar } = useStore(profileStore)
 
   return (
     <SafeAreaView>
       <ThemedView style={style.container}>
         <View style={style.header}>
-          <Image
-            style={style.imageProfile}
-            source={IMAGE_TEST}
-            alt="account-profile"
-          />
-          <ThemedText style={style.profileName}>Alvin Setya Pranata</ThemedText>
+          {avatar ? (
+            <Image
+              style={style.imageProfile}
+              source={IMAGE_TEST}
+              alt="account-profile"
+            />
+
+          ) : 
+          (
+            <View style={{ backgroundColor: 'gray', padding: 20, borderRadius: 100}}>
+              <MaterialIcons name="person" size={42} color="white" />
+            </View>
+          )
+        
+        }
+          <ThemedText style={style.profileName}>{name}</ThemedText>
         </View>
 
         <View style={style.buttonContainer}>
@@ -123,7 +137,7 @@ const style = StyleSheet.create({
     minWidth: "100%",
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 30,
+    marginBottom: 50
   },
 
   imageProfile: {

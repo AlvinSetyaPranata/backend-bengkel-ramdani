@@ -56,12 +56,12 @@ export default function RootLayout() {
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name="addTransportation"
+              name="addTransportation "
               options={{ headerTitle: "Tambah Transportasi" }}
             />
             <Stack.Screen
-              name="histories"
-              options={{ headerTitle: "Histori Perbaikan" }}
+              name="history"
+              options={{ headerShown: false}}
             />
             <Stack.Screen
               name="historyDetail"

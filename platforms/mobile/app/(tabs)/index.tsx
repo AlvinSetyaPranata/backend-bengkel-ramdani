@@ -2,7 +2,13 @@ import { ThemedView } from "@/components/ThemedView";
 import { SCREEN_HEIGHT } from "@/utils/constans";
 import { useRouter, useRootNavigationState } from "expo-router";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet, Text, View, ActivityIndicator, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+  Pressable,
+} from "react-native";
 import { ColumnDef } from "@tanstack/react-table";
 import Datatable from "@/components/Atoms/Datatable";
 import useVehicleQuery from "@/hooks/Queries/useVehiclesQuery";
@@ -22,8 +28,11 @@ export default function HomeScreen() {
   const { token } = useStore(tokenStore);
 
   const handleActionClicked = (selectedData) => {
-    router.replace({pathname: "/orderDetail", params: {instance: JSON.stringify(selectedData)} })
-  }
+    router.replace({
+      pathname: "/orderDetail",
+      params: { instance: JSON.stringify(selectedData) },
+    });
+  };
 
   useEffect(() => {
     const getData = async () => {
@@ -74,8 +83,8 @@ export default function HomeScreen() {
   ];
 
   useEffect(() => {
-    if (!token || token == "") {
-      if (navigation.key) {
+    if (navigation.key) {
+      if (!token || token == "") {
         router.replace("/login");
         return;
       }
