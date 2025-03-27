@@ -7,7 +7,7 @@ import {
   Text,
   Pressable,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -19,12 +19,15 @@ import { profileStore, tokenStore } from "@/store/authStore";
 export default function login() {
   const router = useRouter();
   const [visiblePassword, setVisiblePassword] = useState(false);
+  const [isPending, setIsPending] = useState(false)
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Email tidak valid"),
 
     password: Yup.string().required("Password tidak valid"),
   });
+
+
 
   return (
     <SafeAreaView>
@@ -39,6 +42,8 @@ export default function login() {
             Object.entries(values).map(([key, value]) =>
               data.append(key, value)
             );
+
+            setIsPending(true)
 
             const response = await fetch(
               `${process.env.EXPO_PUBLIC_BASE_API_URL}/login`,
@@ -58,16 +63,20 @@ export default function login() {
 
 
               alert(resData.pesan);
+
+              setIsPending(false)
               return;
             }
-
+            
             alert("Sukses");
             tokenStore.setState(() => ({ token: resData.data.token }));
             profileStore.setState(() => (resData.data.user))
-
+            
             setTimeout(() => {
               router.push("/");
             }, 2000);
+            
+            setIsPending(false)
             return;
           }}
         >
@@ -148,12 +157,12 @@ export default function login() {
               {/* Submit Button */}
               <Pressable
                 style={{
-                  backgroundColor: "black",
+                  backgroundColor: isPending ? "rgba(0,0,0,0.7)" : "rgba(0,0,0,1)",
                   borderRadius: 10,
                   paddingVertical: 10,
                   marginTop: 40,
                 }}
-                onPress={() => handleSubmit()}
+                onPress={() => !isPending ? handleSubmit() : ""}
               >
                 <Text
                   style={{
@@ -162,7 +171,7 @@ export default function login() {
                     textAlign: "center",
                   }}
                 >
-                  Masuk
+                  { isPending ? "Lagi masuk" : "Masuk"}
                 </Text>
               </Pressable>
               <Pressable

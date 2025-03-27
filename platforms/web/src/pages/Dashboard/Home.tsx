@@ -1,12 +1,9 @@
-import EcommerceMetrics from "../../components/ecommerce/EcommerceMetrics";
-import StatisticsChart from "../../components/ecommerce/StatisticsChart";
-import RecentOrders from "../../components/ecommerce/RecentOrders";
-import PageMeta from "../../components/common/PageMeta";
-import { useEffect } from "react";
+
+import PageMeta from "../../components/common/PageMeta"
 import { BoxIconLine, GroupIcon } from "../../icons";
 import { useAtom } from "jotai";
 import { usersQueryAtom } from "../../atoms/queries/usersQuery";
-import { ordersQuertyAtom } from "../../atoms/queries/ordersQuery";
+import { ordersQueryAtom } from "../../atoms/queries/ordersQuery";
 import Skeleton from "react-loading-skeleton";
 import { vehiclesQueryAtom } from "../../atoms/queries/vehiclesQuery";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,7 +12,7 @@ import { faCar } from "@fortawesome/free-solid-svg-icons";
 export default function Home() {
 
   const [{ data: userdata, isPending: usersIsPending }] = useAtom(usersQueryAtom)
-  const [{ data: ordersData, isPending: ordersIsPending}] = useAtom(ordersQuertyAtom)
+  const [{ data: ordersData, isPending: ordersIsPending}] = useAtom(ordersQueryAtom)
   const [{ data: vehiclesData, isPending: vehiclesIsPending }] = useAtom(vehiclesQueryAtom)
 
   return (

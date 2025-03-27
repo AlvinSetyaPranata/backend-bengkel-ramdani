@@ -86,7 +86,7 @@ import {
                   value={values. name}
                   onChangeText={handleChange("name")}
                   onBlur={handleBlur("name")}
-                  placeholder="Enter your name"
+                  placeholder="Masukkan nama anda"
                   keyboardType="default"
                   autoCapitalize="none"
                   style={styles.input}
@@ -109,7 +109,7 @@ import {
                   value={values.email}
                   onChangeText={handleChange("email")}
                   onBlur={handleBlur("email")}
-                  placeholder="Enter your email"
+                  placeholder="Masukkan email anda"
                   keyboardType="email-address"
                   autoCapitalize="none"
                   style={styles.input}
@@ -142,7 +142,7 @@ import {
                     value={values.password}
                     onChangeText={handleChange("password")}
                     onBlur={handleBlur("password")}
-                    placeholder="Enter your password"
+                    placeholder="Masukkan password anda"
                     secureTextEntry={visiblePassword ? false : true}
                     style={styles.input}
                   />

@@ -10,17 +10,30 @@ import { ThemedView } from "@/components/ThemedView";
 import { SCREEN_HEIGHT } from "@/utils/constans";
 import { ThemedText } from "@/components/ThemedText";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import { useStore } from "@tanstack/react-store";
-import { profileStore } from "@/store/authStore";
+import { profileStore, tokenStore } from "@/store/authStore";
 
 const IMAGE_TEST = require("@/assets/images/account-test.jpg");
 
 export default function LoginScreen() {
+  const navigation = useRouter();
+  const { token } = useStore(tokenStore);
 
-  const navigation = useNavigation()
-  
-  const { name, avatar } = useStore(profileStore)
+  const handleLogout = async () => {
+    const res = await fetch(`${process.env.EXPO_PUBLIC_BASE_API_URL}/logout`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    alert("Berhasil Logout");
+    tokenStore.setState(() => ({ token: "" }));
+    navigation.replace("/login");
+  };
+
+  const { name, avatar } = useStore(profileStore);
 
   return (
     <SafeAreaView>
@@ -32,20 +45,25 @@ export default function LoginScreen() {
               source={IMAGE_TEST}
               alt="account-profile"
             />
-
-          ) : 
-          (
-            <View style={{ backgroundColor: 'gray', padding: 20, borderRadius: 100}}>
+          ) : (
+            <View
+              style={{
+                backgroundColor: "gray",
+                padding: 20,
+                borderRadius: 100,
+              }}
+            >
               <MaterialIcons name="person" size={42} color="white" />
             </View>
-          )
-        
-        }
+          )}
           <ThemedText style={style.profileName}>{name}</ThemedText>
         </View>
 
         <View style={style.buttonContainer}>
-          <TouchableOpacity style={style.button} onPress={() => navigation.navigate("history")}>
+          <TouchableOpacity
+            style={style.button}
+            onPress={() => navigation.navigate("history")}
+          >
             <View
               style={{
                 flexDirection: "row",
@@ -60,22 +78,10 @@ export default function LoginScreen() {
             </View>
             <MaterialIcons name="arrow-right" size={24} color="#00000" />
           </TouchableOpacity>
-            <TouchableOpacity style={style.button} onPress={() => navigation.navigate("transportation")}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  flexGrow: 1,
-                  flexShrink: 1,
-                  flexBasis: "0%",
-                }}
-              >
-                <MaterialIcons name="car-rental" size={20} color="#00000" />
-                <Text style={{ marginLeft: 10 }}>Transportasi anda</Text>
-              </View>
-              <MaterialIcons name="arrow-right" size={24} color="#00000" />
-            </TouchableOpacity>
-          <TouchableOpacity style={style.button}>
+          <TouchableOpacity
+            style={style.button}
+            onPress={() => navigation.navigate("transportation")}
+          >
             <View
               style={{
                 flexDirection: "row",
@@ -85,12 +91,15 @@ export default function LoginScreen() {
                 flexBasis: "0%",
               }}
             >
-              <MaterialIcons name="settings" size={20} color="#00000" />
-              <Text style={{ marginLeft: 10 }}>Pengaturan</Text>
+              <MaterialIcons name="car-rental" size={20} color="#00000" />
+              <Text style={{ marginLeft: 10 }}>Transportasi anda</Text>
             </View>
             <MaterialIcons name="arrow-right" size={24} color="#00000" />
           </TouchableOpacity>
-          <TouchableOpacity style={style.button} onPress={() => navigation.navigate("privacyTerms")}>
+          <TouchableOpacity
+            style={style.button}
+            onPress={() => navigation.navigate("privacyTerms")}
+          >
             <View
               style={{
                 flexDirection: "row",
@@ -105,7 +114,7 @@ export default function LoginScreen() {
             </View>
             <MaterialIcons name="arrow-right" size={24} color="#00000" />
           </TouchableOpacity>
-          <TouchableOpacity style={style.button} onPress={() => navigation.navigate("logout")}>
+          <TouchableOpacity style={style.button} onPress={handleLogout}>
             <View
               style={{
                 flexDirection: "row",
@@ -137,7 +146,7 @@ const style = StyleSheet.create({
     minWidth: "100%",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 50
+    marginBottom: 50,
   },
 
   imageProfile: {

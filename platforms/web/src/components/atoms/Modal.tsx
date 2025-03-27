@@ -2,7 +2,6 @@
 import { FormEvent, PropsWithChildren } from "react";
 // import { selectedItemAtom } from "../../atoms/components/datatable";
 import Button from "../ui/button/Button";
-import { MutateFunction } from "@tanstack/query-core";
 
 interface BaseModalProps extends PropsWithChildren {
   title: string;
@@ -89,32 +88,38 @@ export function ModalWithMessege({
 }
 
 
-interface ModalWithConfirmationProps extends Omit<BaseModalProps, "children"|"onClose"> {
-  mutation: MutateFunction<any, unknown, Record<string, any>, unknown>;
-  id: string;
-  messege: string;
+interface ModalWithConfirmationProps<TResponse, TVariables> 
+  extends Omit<BaseModalProps, "children" | "onClose"> {
+  mutation: { mutateAsync: (data: TVariables) => Promise<TResponse>; isPending?: boolean };
+  id: TVariables;
+  message: string; // Fixed typo
   onCancel: () => void;
 }
 
-export function ModalWithConfirmation({
+export function ModalWithConfirmation<TResponse, TVariables>({
   title,
-  messege,
+  message, // Fixed typo
   onCancel,
   mutation,
   id,
   state,
-}: ModalWithConfirmationProps) {
+}: ModalWithConfirmationProps<TResponse, TVariables>) {
 
   const okHandler = async () => {
-    mutation({ id: id})
-    onCancel()
-    setTimeout(() => window.location.reload(), 2000)
-  }
+    try {
+      await mutation.mutateAsync(id); 
+      onCancel();
+
+      setTimeout(() => window.location.reload(), 2000);
+    } catch (error) {
+      console.error("Mutation failed:", error);
+    }
+  };
 
   return (
     <BaseModal title={title} state={state} onClose={onCancel}>
       <div className="px-6 py-4 space-y-12">
-        <p className="text-slate-400">{messege}</p>
+        <p className="text-slate-400">{message}</p> {/* Fixed typo */}
         <div className="flex justify-end w-full gap-x-2">
           <Button
             onClick={onCancel}
@@ -125,14 +130,16 @@ export function ModalWithConfirmation({
           <Button
             onClick={okHandler}
             className="bg-blue-500 text-white rounded-md font-medium px-4 py-2 text-sm"
+            disabled={mutation.isPending} // Prevent duplicate requests
           >
-            Ok
+            {mutation.isPending ? "Processing..." : "Ok"}
           </Button>
         </div>
       </div>
     </BaseModal>
   );
 }
+
 
 interface ModalWithFormProps extends BaseModalProps {
   mutation: MutateFunction<any, unknown, Record<string, any>, unknown>;

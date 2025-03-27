@@ -138,13 +138,23 @@ export default function orderDetail() {
           </Text>
         </View>
         <View style={styles.detailWrapper}>
-          <Text style={styles.label}>Keterangan:</Text>
+          <Text style={styles.label}>Status:</Text>
           <Text
             numberOfLines={2}
             ellipsizeMode="tail"
             style={{ fontSize: 14, marginTop: 6, color: "black" }}
           >
             {data?.status ?? ""}
+          </Text>
+        </View>
+        <View style={styles.detailWrapper}>
+          <Text style={styles.label}>Keterangan:</Text>
+          <Text
+            numberOfLines={2}
+            ellipsizeMode="tail"
+            style={{ fontSize: 14, marginTop: 6, color: "black" }}
+          >
+            {data?.keterangan ?? ""}
           </Text>
         </View>
       </View>

@@ -1,8 +1,8 @@
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import PageBreadcrumb from "../components/common/PageBreadCrumb";
 import PageMeta from "../components/common/PageMeta";
 import DataTable from "./Tables/DataTable";
-import { ordersQuertyAtom } from "../atoms/queries/ordersQuery";
+import { ordersQueryAtom } from "../atoms/queries/ordersQuery";
 import { ColumnDef } from "@tanstack/react-table";
 import Button from "../components/ui/button/Button";
 
@@ -39,16 +39,16 @@ function getStatus(value: string) {
 }
 
 export default function Orders() {
-  const [{ data: orderQuery, isPending }] = useAtom(ordersQuertyAtom);
+  const [{ data: orderQuery, isPending }] = useAtom(ordersQueryAtom);
   const [{ data: vehicleQuery }] = useAtom(vehiclesQueryAtom);
 
   const [iconActive, setIconActive] = useState(false);
   const [input, setInput] = useState("");
   const [modalType, setModalType] = useState("");
 
-  const [{ mutate: createOrder }] = useAtom(createOrderMutationAtom);
-  const [{ mutate: updateOrder }] = useAtom(updateOrderMutationAtom);
-  const [{ mutate: deleteOrder }] = useAtom(deleteOrderMutationAtom);
+  const createOrder = useAtomValue(createOrderMutationAtom);
+  const updateOrder = useAtomValue(updateOrderMutationAtom);
+  const deleteOrder = useAtomValue(deleteOrderMutationAtom);
 
   const [selectedInstance, setSelectedInstance] = useState({});
 

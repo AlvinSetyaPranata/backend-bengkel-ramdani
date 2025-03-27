@@ -44,11 +44,10 @@ export default function Transportation() {
 
   return (
     <Detail title="Data Transportasi">
-      <FloatButton link="/addTransportation" />
 
       <FlatList
         data={data}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => item.id ?? index.toString()}
         renderItem={({ item }) => (
           <ListItem
             key={item.id}

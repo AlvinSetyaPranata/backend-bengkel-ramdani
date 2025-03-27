@@ -4,7 +4,7 @@ import QueryClientAtom from "../query";
 
 
 
-export const ordersQuertyAtom = atomWithQuery((get) => {
+export const ordersQueryAtom = atomWithQuery((get) => {
     const token = get(tokenAtom);
 
   if (!token) {

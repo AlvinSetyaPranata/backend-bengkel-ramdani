@@ -91,7 +91,7 @@ export default function historyDetail() {
         </View>
       </View>
 
-      <View
+      {/* <View
         style={{
           width: SCREEN_WIDTH,
           justifyContent: "center",
@@ -110,7 +110,7 @@ export default function historyDetail() {
             Download Struk
           </Text>
         </Pressable>
-      </View>
+      </View> */}
     </Detail>
   );
 }
