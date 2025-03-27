@@ -61,7 +61,7 @@ export default function orderDetail() {
   }, []);
 
   return (
-    <Detail title="Detail Pesanan">
+    <Detail force_redirect_to="/" title="Detail Pesanan">
 
       <View style={styles.contentContainer}>
         <View style={styles.detailWrapper}>
