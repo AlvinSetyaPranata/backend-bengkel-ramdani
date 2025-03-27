@@ -20,7 +20,7 @@ class KendaraanController extends Controller
     {
         try {
             $user = Auth::user();
-            $kendaraans = Kendaraan::with(['user:id,name'])
+            $kendaraans = Kendaraan::with(['user'])
                 ->select('id', 'user_id', 'nama_kendaraan', 'plat_nomor', 'tahun_produksi', 'warna', 'gambar_kendaraan')
                 ->paginate(10);
     

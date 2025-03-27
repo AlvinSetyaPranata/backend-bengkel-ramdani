@@ -1,3 +1,4 @@
+ini root nya mas
 <?php
 
 use App\Http\Controllers\Api\Auth\UserAuthController;
@@ -40,6 +41,11 @@ Route::prefix('admin')->group(function () {
         Route::post('logout', [AdminAuthController::class, 'logout']);
         Route::get('profile', [AdminAuthController::class, 'profile']);
 
+        Route::prefix('auth-user')->group(function () {
+            Route::post('register', [UserAuthController::class, 'register']);
+            Route::post('login', [UserAuthController::class, 'login']);
+        });
+        
         // Rute manajemen pengguna
         Route::get('users', [AdminAuthController::class, 'listUsers']);
         Route::get('users/search', [AdminAuthController::class, 'searchUsers']);
@@ -51,7 +57,7 @@ Route::prefix('admin')->group(function () {
         Route::get('kendaraan', [KendaraanController::class, 'index']);
         Route::get('kendaraan/{id}', [KendaraanController::class, 'show']);
         Route::post('kendaraan', [KendaraanController::class, 'store']);
-        Route::put('kendaraan/{id}', [KendaraanController::class, 'update']);
+        Route::post('kendaraan/{id}', [KendaraanController::class, 'update']);
         Route::delete('kendaraan/{id}', [KendaraanController::class, 'destroy']);
 
          // Rute manajemen pesanan perbaikan
