@@ -21,7 +21,12 @@ class PesananPerbaikanController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = Pesanan_Perbaikan::with(['kendaraan:id,user_id,nama_kendaraan,plat_nomor,tahun_produksi,warna']);
+            $query = Pesanan_Perbaikan::with([
+                'kendaraan' => function($query) {
+                    $query->select('id', 'user_id', 'nama_kendaraan', 'plat_nomor', 'tahun_produksi', 'warna')
+                        ->with('user:id,name,email,avatar,status');
+                }
+            ]);
             
             // Filter berdasarkan status jika tersedia
             if ($request->has('status') && in_array($request->status, ['menunggu', 'proses', 'selesai', 'batal'])) {

@@ -1,3 +1,4 @@
+ini root nya mas
 <?php
 
 use App\Http\Controllers\Api\Auth\UserAuthController;
@@ -40,6 +41,11 @@ Route::prefix('admin')->group(function () {
         Route::post('logout', [AdminAuthController::class, 'logout']);
         Route::get('profile', [AdminAuthController::class, 'profile']);
 
+        Route::prefix('auth-user')->group(function () {
+            Route::post('register', [UserAuthController::class, 'register']);
+            Route::post('login', [UserAuthController::class, 'login']);
+        });
+        
         // Rute manajemen pengguna
         Route::get('users', [AdminAuthController::class, 'listUsers']);
         Route::get('users/search', [AdminAuthController::class, 'searchUsers']);
