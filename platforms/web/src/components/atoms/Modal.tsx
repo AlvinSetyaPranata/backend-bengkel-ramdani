@@ -173,7 +173,7 @@ export function ModalWithForm({
     }
 
     onClose()
-    // setTimeout(() => window.location.reload(), 3000)
+    setTimeout(() => window.location.reload(), 3000)
 
   }
 
@@ -185,6 +185,7 @@ export function ModalWithForm({
           <div className="flex justify-end w-full gap-x-2 col-span-2">
             <Button
               className="bg-red-500 text-white rounded-md font-medium px-4 py-2 text-sm"
+              onClick={onClose}
             >
               Cancel
             </Button>

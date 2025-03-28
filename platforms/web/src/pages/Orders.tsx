@@ -59,7 +59,7 @@ export default function Orders() {
 
   const columns: ColumnDef<typeof orderQuery>[] = [
     {
-      accessorKey: "kendaraan.nama_kendaraan",
+      accessorFn: (row) => row.kendaraan.nama_kendaraan,
       header: "Nama Kendaraan",
       cell: ({ getValue }) =>
         isPending ? (
@@ -73,8 +73,8 @@ export default function Orders() {
         ),
     },
     {
-      accessorKey: "kendaraan.plat_nomor",
-      header: "Plat Nomor",
+      accessorFn: (row) => row.kendaraan.user.name,
+      header: "Pemilik Kendaraan",
       cell: ({ getValue }) =>
         isPending ? (
           <Skeleton
@@ -238,7 +238,7 @@ export default function Orders() {
                 vehicleQuery
                   ? vehicleQuery.data.map((vehicle) => {
                       return {
-                        label: `${vehicle.nama_kendaraan} - ${vehicle.plat_nomor}`,
+                        label: `${vehicle.nama_kendaraan} - ${vehicle.plat_nomor} - ${vehicle.user.name}`,
                         value: vehicle.id,
                       };
                     })
@@ -381,7 +381,7 @@ export default function Orders() {
           <input
             type="text"
             className="outline-none text-sm"
-            placeholder="Cari bedasarkan"
+            placeholder="Cari Pemilik"
             onChange={onInputChange}
             value={input}
           />
@@ -398,6 +398,8 @@ export default function Orders() {
         data={orderQuery ? orderQuery.data : []}
         columns={columns}
         pagination={orderQuery ? orderQuery.pagination : []}
+        filterBy="Pemilik Kendaraan"
+        filterValue={input}
       />
     </div>
   );

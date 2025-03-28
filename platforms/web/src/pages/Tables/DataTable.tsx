@@ -6,6 +6,7 @@ import {
   getSortedRowModel,
   getCoreRowModel,
   getFilteredRowModel,
+  ColumnFiltersState,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -31,6 +32,8 @@ interface DataTableProps<D> {
   pagination: paginationType;
   page: number;
   pageSetter: (page: string) => void;
+  filterBy?: string;
+  filterValue?: string;
 }
 
 const DataTable = <D,>({
@@ -39,30 +42,45 @@ const DataTable = <D,>({
   pagination,
   page,
   pageSetter,
+  filterBy,
+  filterValue,
 }: DataTableProps<D>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [enabledSort, setEnableSort] = useState("")
+  const [enabledSort, setEnableSort] = useState("");
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
+  // Update filters when filterBy or filterValue changes
+  useEffect(() => {
+    if (filterBy && filterValue !== undefined) {
+      setColumnFilters([{ id: filterBy, value: filterValue }]);
+    } else {
+      setColumnFilters([]);
+    }
+  }, [filterBy, filterValue]);
 
   const table = useReactTable({
     data,
     columns,
-    state: { sorting },
+    state: { sorting, columnFilters },
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters, // Required for filtering
+    enableColumnFilters: true,
   });
 
-
   const enableSortHandler = (header) => {
-    header.column.toggleSorting(header.column.getIsSorted() === 'asc')
+    header.column.toggleSorting(header.column.getIsSorted() === "asc");
 
-    if (header.id == enabledSort) {
-      setEnableSort("")
-      return
+    if (header.id === enabledSort) {
+      setEnableSort("");
+      return;
     }
-    setEnableSort(header.id)
-  }
+    setEnableSort(header.id);
+  };
+
+  useEffect(() => console.log("Table Columns:", table.getAllColumns().map(col => col.id)), [])
 
   return (
     <div>
@@ -90,7 +108,11 @@ const DataTable = <D,>({
                               fill="none"
                               viewBox="0 0 24 24"
                               strokeWidth={1.5}
-                              className={`size-4 stroke-black ${enabledSort == header.id ? 'dark:stroke-amber-500' : 'dark:stroke-white'}`}
+                              className={`size-4 stroke-black ${
+                                enabledSort === header.id
+                                  ? "dark:stroke-amber-500"
+                                  : "dark:stroke-white"
+                              }`}
                             >
                               <path
                                 strokeLinecap="round"
@@ -127,11 +149,11 @@ const DataTable = <D,>({
         </div>
       </div>
 
-      {/* pagination controls */}
+      {/* Pagination Controls */}
       <div className="w-full flex justify-end">
         <div className="flex justify-center gap-4 mt-4">
           <button
-            className="px-4 py-2 dark:bg-brand-600  dark:text-white rounded hover:cursor-pointer text-sm"
+            className="px-4 py-2 dark:bg-brand-600 dark:text-white rounded hover:cursor-pointer text-sm"
             onClick={() => pageSetter((prev) => Math.max(prev - 1, 1))}
             disabled={page === 1}
           >
@@ -141,7 +163,7 @@ const DataTable = <D,>({
             {pagination.halaman_sekarang} / {pagination.halaman_terakhir}
           </span>
           <button
-            className="px-4 py-2 dark:bg-brand-600  dark:text-white rounded hover:cursor-pointer text-sm"
+            className="px-4 py-2 dark:bg-brand-600 dark:text-white rounded hover:cursor-pointer text-sm"
             onClick={() =>
               pageSetter((prev) => Math.min(prev + 1, pagination.total))
             }
@@ -151,7 +173,7 @@ const DataTable = <D,>({
           </button>
         </div>
       </div>
-      {/* pagination controls */}
+      {/* Pagination Controls */}
     </div>
   );
 };
