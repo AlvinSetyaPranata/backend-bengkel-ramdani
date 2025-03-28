@@ -1,4 +1,3 @@
-ini root nya mas
 <?php
 
 use App\Http\Controllers\Api\Auth\UserAuthController;
