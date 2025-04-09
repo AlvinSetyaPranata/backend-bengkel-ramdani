@@ -24,7 +24,6 @@ export default function ImageField({
 }: Props) {
   const [image, setImage] = useState<string>(defaultValue);
 
-  useEffect(() => console.log(image), [])
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -35,7 +34,6 @@ export default function ImageField({
     });
 
     if (!result.canceled) {
-      console.log("Selected Image URI:", result.assets[0].uri);
       setImage(result.assets[0].uri);
     }
   };

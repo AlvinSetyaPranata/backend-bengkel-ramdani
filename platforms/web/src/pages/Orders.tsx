@@ -24,6 +24,7 @@ import {
   updateOrderMutationAtom,
 } from "../atoms/mutations/ordersMutation";
 import { vehiclesQueryAtom } from "../atoms/queries/vehiclesQuery";
+import { tokenAtom } from "../atoms/auth";
 
 function getStatus(value: string) {
   switch (value) {
@@ -46,11 +47,13 @@ export default function Orders() {
   const [input, setInput] = useState("");
   const [modalType, setModalType] = useState("");
 
-  const createOrder = useAtomValue(createOrderMutationAtom);
-  const updateOrder = useAtomValue(updateOrderMutationAtom);
-  const deleteOrder = useAtomValue(deleteOrderMutationAtom);
+  const [{mutate: createOrder}] = useAtom(createOrderMutationAtom);
+  const [{mutate: updateOrder}] = useAtom(updateOrderMutationAtom);
+  const [{mutate: deleteOrder}] = useAtom(deleteOrderMutationAtom);
 
   const [selectedInstance, setSelectedInstance] = useState({});
+
+  const token = useAtomValue(tokenAtom)
 
   const handleActionPress = (type, instance) => {
     setModalType(type);
@@ -199,6 +202,8 @@ export default function Orders() {
     setIconActive(false);
   };
 
+  
+
   return (
     <div>
       <PageMeta
@@ -208,7 +213,7 @@ export default function Orders() {
       <PageBreadcrumb pageTitle="Data Pesanan" />
 
       <ModalWithConfirmation
-        messege="Apakah anda ingin membatalkan pesanan ini?"
+        message="Apakah anda ingin mengahapus pesanan ini?"
         title="Peringatan"
         mutation={deleteOrder}
         id={selectedInstance ? selectedInstance.id : null}
@@ -230,26 +235,14 @@ export default function Orders() {
         <div>
           <Label>Kendaraan</Label>
           <div className="relative">
-            <Select
-              className="min-w-[300px]"
-              name="kendaraan_pelanggan_id"
-              placeholder="Pilih kendaraan"
-              options={
-                vehicleQuery
+            <Input name="kendaraan_pelanggan_id" searchData={vehicleQuery
                   ? vehicleQuery.data.map((vehicle) => {
                       return {
-                        label: `${vehicle.nama_kendaraan} - ${vehicle.plat_nomor} - ${vehicle.user.name}`,
+                        name: `${vehicle.nama_kendaraan} - ${vehicle.plat_nomor} - ${vehicle.user.name}`,
                         value: vehicle.id,
                       };
                     })
-                  : []
-              }
-              defaultValue={
-                modalType == "update" && selectedInstance
-                  ? selectedInstance.kendaraan_pelanggan_id
-                  : ""
-              }
-            />
+                  : []} />
           </div>
         </div>
         <div>

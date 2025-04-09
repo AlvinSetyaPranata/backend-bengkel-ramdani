@@ -106,11 +106,15 @@ export function ModalWithConfirmation<TResponse, TVariables>({
 }: ModalWithConfirmationProps<TResponse, TVariables>) {
 
   const okHandler = async () => {
-    try {
-      await mutation.mutateAsync(id); 
-      onCancel();
 
-      setTimeout(() => window.location.reload(), 2000);
+    try {
+      await mutation(id); 
+      onCancel();
+      
+      setTimeout(() => {
+        
+        window.location.reload
+      }, 2000);
     } catch (error) {
       console.error("Mutation failed:", error);
     }
@@ -119,7 +123,7 @@ export function ModalWithConfirmation<TResponse, TVariables>({
   return (
     <BaseModal title={title} state={state} onClose={onCancel}>
       <div className="px-6 py-4 space-y-12">
-        <p className="text-slate-400">{message}</p> {/* Fixed typo */}
+        <p className="text-white">{message}</p> {/* Fixed typo */}
         <div className="flex justify-end w-full gap-x-2">
           <Button
             onClick={onCancel}

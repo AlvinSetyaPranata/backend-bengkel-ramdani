@@ -16,7 +16,6 @@ export default function Detail({ title, children, fallback_screen="/", force_red
 
   const getUrl = () => {
     if (force_redirect_to != "" || force_redirect_to) {
-      console.log(force_redirect_to)
       router.navigate(force_redirect_to)
       return
     }

@@ -18,7 +18,6 @@ const useVehicleQuery = () => {
 
         const { token } = useStore(tokenStore)
         
-        console.log("Called")
 
         if (!token) {
             return

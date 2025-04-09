@@ -34,7 +34,6 @@ export default function Form({ structure, schema, addButtonTitle, defaultValue}:
     });
 
   const onSubmit = (event: GestureResponderEvent) => {
-    console.log(form)
 
     const result = schema.safeParse(form);
 

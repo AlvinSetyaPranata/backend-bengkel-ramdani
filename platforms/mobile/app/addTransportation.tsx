@@ -7,7 +7,6 @@ import { z } from 'zod'
 export default function addTransportation() {
     const { id } = useLocalSearchParams()
 
-    useEffect(() => console.log(id), [])
 
     const schema = z.object({
       nama_kendaraan: z.string().min(1, "Harap diisi"),

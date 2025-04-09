@@ -7,15 +7,6 @@ const createOrderMutationAtom = atomWithMutation((get) => {
   const token = get(tokenAtom);
   const queryClient = get(QueryClientAtom); // ✅ Get QueryClient instance
 
-  if (!token) {
-    return {
-      mutationKey: ["orders"],
-      mutationFn: async (data: Record<any, any>) => {
-        throw new Error("Token is missing. Cannot create an order.");
-      },
-    };
-  }
-
   return {
     mutationKey: ["orders"],
     mutationFn: async (data: Record<string, any>) => {
@@ -31,7 +22,8 @@ const createOrderMutationAtom = atomWithMutation((get) => {
       const content = await response.json();
 
       if (response.status == 422) {
-        toast.error(content.errors, { position: 'top-right' })
+        toast.error(content.pesan, { position: 'top-right' })
+        throw new Error("Failed to create order");
       }
       
       if (!response.ok) {
@@ -47,6 +39,7 @@ const createOrderMutationAtom = atomWithMutation((get) => {
       queryClient.invalidateQueries({ queryKey: ['orders']});
       toast.success("Berhasil membuat pesanan", { position: 'top-right' })
     },
+    
   };
 });
 
@@ -106,7 +99,7 @@ const deleteOrderMutationAtom = atomWithMutation((get) => {
 
   return {
     mutationKey: ["orders"],
-    mutationFn: async ({id}: {id: string}) => {
+    mutationFn: async (id: string) => {
       const response = await fetch(`${import.meta.env.VITE_BASE_API_URL}/pesanan/${id}`, {
         method: "DELETE",
         headers: {
@@ -118,11 +111,13 @@ const deleteOrderMutationAtom = atomWithMutation((get) => {
 
       if (response.status == 422) {
         toast.error(content.errors, { position: 'top-right' })
+        throw new Error("Failed to delete order");
+        
         return
       }
 
       if (!response.ok) {
-        throw new Error("Failed to create order");
+        throw new Error("Failed to delete order");
       }
 
       return content;

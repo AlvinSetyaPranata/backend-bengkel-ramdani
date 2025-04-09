@@ -1,7 +1,7 @@
-import type React from "react";
 import { ChangeEvent, useEffect, useState, type FC } from "react";
 
 interface InputProps {
+  searchData?: { name: string; value: string }[];
   defaultValue?: string;
   type?: "text" | "number" | "email" | "password" | "date" | "time" | string;
   id?: string;
@@ -23,6 +23,7 @@ const Input: FC<InputProps> = ({
   id,
   name,
   placeholder,
+  searchData,
   className = "",
   min,
   max,
@@ -31,7 +32,6 @@ const Input: FC<InputProps> = ({
   disabled = false,
   success = false,
   error = false,
-  hint,
 }) => {
   let inputClasses = ` h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 ${className}`;
 
@@ -45,19 +45,28 @@ const Input: FC<InputProps> = ({
     inputClasses += ` bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20 dark:border-gray-700 dark:text-white/90  dark:focus:border-brand-800`;
   }
 
-  const [value, setValue] = useState(defaultValue)
+  const [value, setValue] = useState(defaultValue);
+  const [searchOpened, setSearchOpened] = useState(false);
 
+  const [selected, setSelected] = useState({ name: "", value: "" });
 
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => setValue(event.target.value)
+  const onChange = (event: ChangeEvent<HTMLInputElement>) =>
+    setValue(event.target.value);
 
-  useEffect(() => setValue(defaultValue ? defaultValue : ""), [defaultValue])
+  useEffect(() => setValue(defaultValue ? defaultValue : ""), [defaultValue]);
+
+  useEffect(() => setSearchOpened(value ? true : false), [value]);
 
   return (
     <div className="relative">
+      {searchData && 
+      <input type="hidden" value={selected.value} name={name} />
+      
+      }
       <input
         type={type}
         id={id}
-        name={name}
+        name={searchData ? "" : name}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
@@ -68,18 +77,34 @@ const Input: FC<InputProps> = ({
         className={inputClasses}
       />
 
-      {hint && (
-        <p
-          className={`mt-1.5 text-xs ${
-            error
-              ? "text-error-500"
-              : success
-              ? "text-success-500"
-              : "text-gray-500"
-          }`}
+      {searchOpened && searchData && type == "text" ? (
+        <div
+          className={
+            inputClasses +
+            " mt-4 absolute overflow-y-scroll min-h-[200px] z-99 space-y-2"
+          }
         >
-          {hint}
-        </p>
+          {searchData
+            .filter((data) =>
+              data.name.toLowerCase().includes(value.toLowerCase())
+            )
+            .map((data, index) => (
+              <button
+              type="button"
+                key={index}
+                onClick={() => {
+                  setSelected(data);
+                  setValue(data.name);
+                  setTimeout(() => setSearchOpened(false), 100);
+                }}
+                className="hover:bg-white hover:text-black w-full text-left px-2 py-1 rounded-md"
+              >
+                <p>{data.name}</p>
+              </button>
+            ))}
+        </div>
+      ) : (
+        <></>
       )}
     </div>
   );

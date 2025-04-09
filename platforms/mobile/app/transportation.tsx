@@ -20,7 +20,6 @@ export default function Transportation() {
 
   useEffect(() => {
 
-    console.log("Transport")
     if (navigation.key) {
       if (!token || token == "") {
         router.replace("/login")

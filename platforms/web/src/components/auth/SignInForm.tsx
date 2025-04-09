@@ -20,7 +20,6 @@ export default function SignInForm() {
 
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     setIsPending(true)
-
     event.preventDefault()
 
     const form = new FormData(event.currentTarget)
@@ -39,7 +38,7 @@ export default function SignInForm() {
         if (res.status == 401) {
           toast.error("Username atau Password salah!", { position: "top-right"})
           setIsPending(false)
-          return undefined
+          return
         }
 
         return res.json()

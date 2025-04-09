@@ -1,9 +1,12 @@
 import { SidebarProvider, useSidebar } from "../context/SidebarContext";
-import { Outlet } from "react-router";
+import { Outlet, useNavigate } from "react-router";
 import AppHeader from "./AppHeader";
 import Backdrop from "./Backdrop";
 import AppSidebar from "./AppSidebar";
 import Security from "./Security";
+import { useEffect } from "react";
+import { useAtomValue } from "jotai";
+import { tokenAtom } from "../atoms/auth";
 
 const LayoutContent: React.FC = () => {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
@@ -29,6 +32,17 @@ const LayoutContent: React.FC = () => {
 };
 
 const AppLayout: React.FC = () => {
+
+  const token = useAtomValue(tokenAtom)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/signin")
+      return
+    }
+  }, [])
+
   return (
     <Security>
       <SidebarProvider>
