@@ -147,7 +147,7 @@ const Vehicles: React.FC = () => {
       <PageBreadcrumb pageTitle="Data Kendaraan" />
 
       <ModalWithConfirmation
-        messege="Apakah anda ingin menghapus kendaraan ini?"
+        message="Apakah anda ingin menghapus kendaraan ini?"
         title="Peringatan"
         mutation={deleteVehicle}
         id={selectedData ? selectedData.id : null}

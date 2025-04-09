@@ -37,14 +37,14 @@ const registerVehicleMutationAtom = atomWithMutation((get) => {
 
       if (response.status == 409) {
         toast.error(content.errors, { position: 'top-right' })
+        throw new Error("Failed to add vehicle")
         return
       }
 
 
       if (!response.ok) {
-        console.log(response)
-
         toast.error("Gagal dalam menambahkan kendaraan")
+        throw new Error("Failed to add vehicle")
         return
       }
       
@@ -52,7 +52,7 @@ const registerVehicleMutationAtom = atomWithMutation((get) => {
       return content;
     },
 
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["vehicles"]});
     },
 
@@ -91,12 +91,13 @@ const updateVehicleMutationAtom = atomWithMutation((get) => {
 
       if (response.status == 422) {
         toast.error(content.errors, { position: 'top-right' })
+        throw new Error("Failed to update vehicle")
         return
       }
-
+      
       if (!response.ok) {
-        console.log(response);
         toast.error("Gagal dalam memperbarui kendaraan");
+        throw new Error("Failed to update vehicle")
         return;
       }
 
@@ -104,8 +105,7 @@ const updateVehicleMutationAtom = atomWithMutation((get) => {
       return content;
     },
 
-    onSettled: () => {
-      console.log("Success")
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["vehicles"] });
     },
   };
@@ -127,7 +127,7 @@ const deleteVehicleMutationAtom = atomWithMutation((get) => {
 
   return {
     mutationKey: ["deleteVehicles"],
-    mutationFn: async ({ id }: { id: string }) => {
+    mutationFn: async (id: string) => {
       const response = await fetch(`${import.meta.env.VITE_BASE_API_URL}/kendaraan/${id}`, {
         method: "DELETE",
         headers: {
@@ -136,11 +136,10 @@ const deleteVehicleMutationAtom = atomWithMutation((get) => {
       });
 
       if (!response.ok) {
-        console.log(response);
         toast.error("Gagal dalam menghapus kendaraan");
-        return;
+        throw new Error("Failed to delete vehicle")
       }
-
+      
       toast.success("Berhasil menghapus kendaraan");
       return response.json();
     },
