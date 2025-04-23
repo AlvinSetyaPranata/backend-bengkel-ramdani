@@ -1,0 +1,1 @@
+export const DEFAULT_STATISTICS_TRENDS_DATA = [{ bulan: "", total_pesanan: 0, pesanan_selesai: 0, pendapatan: 0 }]
