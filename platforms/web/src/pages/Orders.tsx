@@ -25,6 +25,7 @@ import {
 } from "../atoms/mutations/ordersMutation";
 import { vehiclesQueryAtom } from "../atoms/queries/vehiclesQuery";
 import { tokenAtom } from "../atoms/auth";
+import { formatCurrency } from "../utils/converter";
 
 function getStatus(value: string) {
   switch (value) {
@@ -87,6 +88,20 @@ export default function Orders() {
           />
         ) : (
           (getValue() as string)
+        ),
+    },
+    {
+      accessorFn: (row) => row.total_biaya,
+      header: "Total Biaya",
+      cell: ({ getValue }) =>
+        isPending ? (
+          <Skeleton
+            width={100}
+            height={10}
+            className="bg-gray-500 animate-pulse"
+          />
+        ) : (
+          formatCurrency(getValue() as number)
         ),
     },
     {

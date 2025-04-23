@@ -39,7 +39,7 @@ const Vehicles: React.FC = () => {
 
   const columns: ColumnDef<typeof data>[] = [
     {
-      accessorKey: "user.name",
+      accessorFn: (row) => row.user.name,
       header: "Pemilik",
       cell: ({ getValue }) =>
         isPending ? <Skeleton width={100} /> : (getValue() as string),
@@ -251,7 +251,7 @@ const Vehicles: React.FC = () => {
           <input
             type="text"
             className="outline-none text-sm"
-            placeholder="Cari bedasarkan"
+            placeholder="Cari bedasarkan Pemilik"
             onChange={onInputChange}
             value={input}
           />
@@ -284,6 +284,8 @@ const Vehicles: React.FC = () => {
         data={data ? data.data : []}
         columns={columns}
         pagination={data ? data.pagination : []}
+        filterBy="Pemilik"
+        filterValue={input}
       />
     </div>
   );

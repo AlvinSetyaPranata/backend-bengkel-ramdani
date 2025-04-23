@@ -88,7 +88,7 @@ const Users: React.FC = () => {
       },
     },
     {
-      accessorKey: "name",
+      accessorFn: (row) => row.name,
       header: "Nama",
       cell: ({ getValue }) =>
         isPending ? <Skeleton width={100} /> : (getValue() as string),
@@ -239,17 +239,10 @@ const Users: React.FC = () => {
           <input
             type="text"
             className="outline-none text-sm"
-            placeholder="Cari bedasarkan"
+            placeholder="Cari bedasarkan Nama"
             onChange={onInputChange}
             value={input}
           />
-          <button onClick={handleRemove}>
-            <FontAwesomeIcon
-              icon={iconActive ? faX : faSearch}
-              color="gray"
-              size="xs"
-            />
-          </button>
         </div>
 
         <button>
@@ -272,6 +265,8 @@ const Users: React.FC = () => {
         data={userData ? userData.data : []}
         columns={columns}
         pagination={userData ? userData.pagination : []}
+        filterBy="Nama"
+        filterValue={input}
       />
     </div>
   );
