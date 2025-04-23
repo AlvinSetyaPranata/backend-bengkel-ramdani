@@ -17,6 +17,7 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": [
+        "android.permission.RECORD_AUDIO",
         "android.permission.RECORD_AUDIO"
       ],
       "package": "com.fricilia.bengkel"
@@ -54,6 +55,12 @@
       "eas": {
         "projectId": "a97934bc-6322-42ab-997d-f971e9a647c0"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/a97934bc-6322-42ab-997d-f971e9a647c0"
     }
   }
 }

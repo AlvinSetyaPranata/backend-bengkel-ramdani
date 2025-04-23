@@ -115,7 +115,7 @@ export default function orderDetail() {
           </Text>
         </View>
         <View style={styles.detailWrapper}>
-          <Text style={styles.label}>Tanggal Selesai:</Text>
+          <Text style={styles.label}>Merek Kendaraan:</Text>
           <Text
             numberOfLines={2}
             ellipsizeMode="tail"
@@ -148,7 +148,7 @@ export default function orderDetail() {
           </Text>
         </View>
         <View style={styles.detailWrapper}>
-          <Text style={styles.label}>Keterangan:</Text>
+          <Text style={styles.label}>Kerusakan:</Text>
           <Text
             numberOfLines={2}
             ellipsizeMode="tail"
