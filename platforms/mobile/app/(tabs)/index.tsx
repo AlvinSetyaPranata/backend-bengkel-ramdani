@@ -6,17 +6,25 @@ import {
   StyleSheet,
   Text,
   View,
-  ActivityIndicator,
   Pressable,
 } from "react-native";
 import { ColumnDef } from "@tanstack/react-table";
 import Datatable from "@/components/Atoms/Datatable";
-import useVehicleQuery from "@/hooks/Queries/useVehiclesQuery";
 import { useStore } from "@tanstack/react-store";
 import { tokenStore } from "@/store/authStore";
 import { useEffect, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
-useVehicleQuery;
+import { Image } from "expo-image";
+import * as SplashScreen from 'expo-splash-screen';
+
+
+SplashScreen.preventAutoHideAsync()
+
+SplashScreen.setOptions({
+  duration: 1000,
+  fade: true
+})
+
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -96,10 +104,10 @@ export default function HomeScreen() {
         <ThemedView style={styles.container}>
           {/* Header */}
           <View style={styles.header}>
-            <Text style={{ fontWeight: "500", fontSize: 20 }}>Halo Alvin</Text>
+            <Image source={require("../../assets/images/logo.jpeg")} alt="Logo" style={styles.logo}/>
           </View>
 
-          <View style={{ marginTop: 50 }}>
+          <View style={{ marginTop: 50, paddingHorizontal: 15, }}>
             <Text style={{ fontSize: 15, fontWeight: "600", marginBottom: 5 }}>
               Daftar pesanan anda
             </Text>
@@ -114,15 +122,19 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 40,
-    paddingHorizontal: 15,
     minHeight: SCREEN_HEIGHT,
     flex: 1,
   },
   header: {
     width: "100%",
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
+    backgroundColor: 'black'
   },
+
+  logo: {
+    width: 60,
+    height: 60,
+  }
 });

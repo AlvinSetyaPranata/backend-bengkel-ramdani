@@ -94,20 +94,29 @@ interface ModalWithConfirmationProps<TResponse, TVariables>
   id: TVariables;
   message: string; // Fixed typo
   onCancel: () => void;
+  onOk?: () => void;
 }
 
 export function ModalWithConfirmation<TResponse, TVariables>({
   title,
   message, // Fixed typo
   onCancel,
+  onOk,
   mutation,
   id,
   state,
 }: ModalWithConfirmationProps<TResponse, TVariables>) {
 
   const okHandler = async () => {
-
+    
+    if (onOk) {
+      onOk()
+      return
+    }
+  
+    
     try {
+
       await mutation(id); 
       onCancel();
       
@@ -118,6 +127,8 @@ export function ModalWithConfirmation<TResponse, TVariables>({
     } catch (error) {
       console.error("Mutation failed:", error);
     }
+
+    
   };
 
   return (

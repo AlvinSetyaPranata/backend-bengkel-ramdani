@@ -67,7 +67,8 @@ const deleteUserMutationAtom = atomWithMutation((get) => {
 
   return {
     mutationKey: ["orders"],
-    mutationFn: async ({id}: {id: string}) => {
+    mutationFn: async (id: string) => {
+
       const response = await fetch(`${import.meta.env.VITE_BASE_API_URL}/users/${id}`, {
         method: "DELETE",
         headers: {

@@ -163,10 +163,11 @@ const Users: React.FC = () => {
     setInput(event.target.value);
   };
 
-  const handleRemove = () => {
-    setInput("");
-    setIconActive(false);
-  };
+  const handleRemove =  async () => {
+    console.log(selectedInstance.id)
+
+    // const response = await deleteUser(selectedInstance.id)
+  }
 
   return (
     <div>
@@ -177,9 +178,8 @@ const Users: React.FC = () => {
       <PageBreadcrumb pageTitle="Data Pengguna" />
 
       <ModalWithConfirmation
-        messege="Apakah anda ingin menghapus pengguna ini?"
+        message="Apakah anda ingin menghapus pengguna ini?"
         title="Peringatan"
-        onOk={() => null}
         id={selectedInstance ? selectedInstance.id : null}
         onCancel={() => setModalType("")}
         state={modalType == "delete"}
@@ -230,6 +230,7 @@ const Users: React.FC = () => {
         </div>
         
       </ModalWithForm>
+
 
       {/* update and create modal */}
 

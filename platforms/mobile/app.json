@@ -8,12 +8,17 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/logo.jpeg", 
+      "resizeMode": "contain",         
+      "backgroundColor": "#000000"      
+    },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/logo.jpeg",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
@@ -61,6 +66,6 @@
     },
     "updates": {
       "url": "https://u.expo.dev/a97934bc-6322-42ab-997d-f971e9a647c0"
-    }
+    },
   }
 }
