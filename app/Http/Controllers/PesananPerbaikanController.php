@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kendaraan;
 use App\Models\Pembayaran;
 use App\Models\Pesanan_Perbaikan;
+use App\Models\User;
 use App\Traits\ApiResponse;
 use App\Services\PaymentService;
 use Carbon\Carbon;
@@ -61,11 +62,25 @@ class PesananPerbaikanController extends Controller
             $order_list = array_map(function ($order) {
                 $payment_data = Pembayaran::where("pesanan_perbaikan_id", "=", $order["id"])->first();
 
+                $kendaraan_data = Kendaraan::where("id", "=", $order["kendaraan_pelanggan_id"])->first();
+
+                $user_data = User::where("id", "=", $kendaraan_data["user_id"])->first();
+
                 return [
+                    'id' => $order["id"],
                     'kendaraan_pelanggan_id' => $order["kendaraan_pelanggan_id"],
+                    'kendaraan' => [
+                        'user_id' => $kendaraan_data["user_id"],
+                        'nama_kendaraan' => $kendaraan_data["nama_kendaraan"],
+                        'plat_nomor' => $kendaraan_data["plat_nomor"],
+                        'gambar_kendaraan' => $kendaraan_data["gambar_kendaraan"],
+                        'tahun_produksi' => $kendaraan_data["tahun_produksi"],
+                        'warna' => $kendaraan_data["warna"],
+                        'user' => $user_data
+                    ],
                     'tanggal_masuk' => $order["tanggal_masuk"],
-                    'tanggal_perbaikan' => $order["tanggal_keluar"],
-                    'tanggal_selesai' => $order["tanggsl_selesai"],
+                    'tanggal_perbaikan' => $order["tanggal_perbaikan"],
+                    'tanggal_selesai' => $order["tanggal_selesai"],
                     'total_biaya' => $order["total_biaya"],
                     'status' => $order["status"],
                     'keterangan' => $order["keterangan"],
@@ -102,7 +117,7 @@ class PesananPerbaikanController extends Controller
                         ->sum('total_biaya')
                 ];
 
-                return response()->json($responseData);
+                return $this->paginationResponse($pesanans, $stats);
             }
 
             return response()->json($responseData);
