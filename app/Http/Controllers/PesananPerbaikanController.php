@@ -254,12 +254,13 @@ class PesananPerbaikanController extends Controller
             return $this->successResponse([
                 "kendaraan_pelanggan_id" => $pesanan["kendaraan_pelanggan_id"],
                 "tanggal_masuk" => $pesanan["tanggal_masuk"],
-                "tanggal_perbaikan" => $pesanan["tanggal_perbaikan"],
+                "tanggal_perbaikan" => $pesanan["txanggal_perbaikan"],
                 "tanggal_selesai" => $pesanan["tanggal_selesai"],
                 "total_biaya" => $pesanan["total_biaya"],
                 "status" => $pesanan["status"],
                 "keterangan" => $pesanan["keterangan"],
-                "payment_data" => $pembayaran
+                "metode_pembayaran" => $pembayaran["metode_pembayaran"],
+                "token_pembayaran" => $pembayaran["payment_link"]
             ], 'Detail pesanan perbaikan berhasil diambil');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $this->errorResponse('Pesanan perbaikan tidak ditemukan', "ID pesanan tidak valid: {$id}", 404);
@@ -448,7 +449,52 @@ class PesananPerbaikanController extends Controller
                 ->orderBy('tanggal_masuk', 'desc')
                 ->paginate(10);
 
-            return $this->paginationResponse($pesanans, 'Riwayat perbaikan kendaraan berhasil diambil');
+            $order_list = array_map(function ($order) {
+                $payment_data = Pembayaran::where("pesanan_perbaikan_id", "=", $order["id"])->first();
+
+                $kendaraan_data = Kendaraan::where("id", "=", $order["kendaraan_pelanggan_id"])->first();
+
+                $user_data = User::where("id", "=", $kendaraan_data["user_id"])->first();
+
+                return [
+                    'id' => $order["id"],
+                    'kendaraan_pelanggan_id' => $order["kendaraan_pelanggan_id"],
+                    'kendaraan' => [
+                        'user_id' => $kendaraan_data["user_id"],
+                        'nama_kendaraan' => $kendaraan_data["nama_kendaraan"],
+                        'plat_nomor' => $kendaraan_data["plat_nomor"],
+                        'gambar_kendaraan' => $kendaraan_data["gambar_kendaraan"],
+                        'tahun_produksi' => $kendaraan_data["tahun_produksi"],
+                        'warna' => $kendaraan_data["warna"],
+                        'user' => $user_data
+                    ],
+                    'tanggal_masuk' => $order["tanggal_masuk"],
+                    'tanggal_perbaikan' => $order["tanggal_perbaikan"],
+                    'tanggal_selesai' => $order["tanggal_selesai"],
+                    'total_biaya' => $order["total_biaya"],
+                    'status' => $order["status"],
+                    'keterangan' => $order["keterangan"],
+                    "metode_pembayaran" => $payment_data->metode_pembayaran,
+                    "token_pembayaran" => $payment_data->payment_link
+                ];
+            }, $pesanans->items());
+
+            $responseData = [
+                'status' => 'sukses',
+                'pesan' => "Daftar pesanan perbaikan berhasil diambil",
+                'data' => $order_list,
+                'pagination' => [
+                    'total' => $pesanans->total(),
+                    'per_halaman' => $pesanans->perPage(),
+                    'halaman_sekarang' => $pesanans->currentPage(),
+                    'halaman_terakhir' => $pesanans->lastPage(),
+                    'dari' => $pesanans->firstItem(),
+                    'sampai' => $pesanans->lastItem()
+                ]
+            ];
+
+
+            return response()->json($responseData);
         } catch (\Exception $e) {
             return $this->errorResponse('Gagal mengambil riwayat perbaikan kendaraan', $e->getMessage(), 500);
         }
@@ -485,7 +531,51 @@ class PesananPerbaikanController extends Controller
                     ->sum('total_biaya')
             ];
 
-            return $this->paginationResponse($pesanans, 'Riwayat perbaikan pengguna berhasil diambil', $stats);
+            $order_list = array_map(function ($order) {
+                $payment_data = Pembayaran::where("pesanan_perbaikan_id", "=", $order["id"])->first();
+
+                $kendaraan_data = Kendaraan::where("id", "=", $order["kendaraan_pelanggan_id"])->first();
+
+                $user_data = User::where("id", "=", $kendaraan_data["user_id"])->first();
+
+                return [
+                    'id' => $order["id"],
+                    'kendaraan_pelanggan_id' => $order["kendaraan_pelanggan_id"],
+                    'kendaraan' => [
+                        'user_id' => $kendaraan_data["user_id"],
+                        'nama_kendaraan' => $kendaraan_data["nama_kendaraan"],
+                        'plat_nomor' => $kendaraan_data["plat_nomor"],
+                        'gambar_kendaraan' => $kendaraan_data["gambar_kendaraan"],
+                        'tahun_produksi' => $kendaraan_data["tahun_produksi"],
+                        'warna' => $kendaraan_data["warna"],
+                        'user' => $user_data
+                    ],
+                    'tanggal_masuk' => $order["tanggal_masuk"],
+                    'tanggal_perbaikan' => $order["tanggal_perbaikan"],
+                    'tanggal_selesai' => $order["tanggal_selesai"],
+                    'total_biaya' => $order["total_biaya"],
+                    'status' => $order["status"],
+                    'keterangan' => $order["keterangan"],
+                    "metode_pembayaran" => $payment_data->metode_pembayaran,
+                    "token_pembayaran" => $payment_data->payment_link
+                ];
+            }, $pesanans->items());
+
+            $responseData = [
+                'status' => 'sukses',
+                'pesan' => "Daftar pesanan perbaikan berhasil diambil",
+                'data' => $order_list,
+                'pagination' => [
+                    'total' => $pesanans->total(),
+                    'per_halaman' => $pesanans->perPage(),
+                    'halaman_sekarang' => $pesanans->currentPage(),
+                    'halaman_terakhir' => $pesanans->lastPage(),
+                    'dari' => $pesanans->firstItem(),
+                    'sampai' => $pesanans->lastItem()
+                ]
+            ];
+
+            return response()->json($responseData);
         } catch (\Exception $e) {
             return $this->errorResponse('Gagal mengambil riwayat perbaikan pengguna', $e->getMessage(), 500);
         }
