@@ -14,11 +14,11 @@ class Pembayaran extends Model
 
     protected $fillable = [
         'pesanan_perbaikan_id',
-        'user_id',
-        'jumlah_bayar',
-        'metode_pembayaran',
+        'payment_link',
         'status_pembayaran',
-        'tanggal_pembayaran'
+        'tanggal_pembayaran',
+        'metode_pembayaran',
+        'jumlah_dibayar',
     ];
 
     public function pesananPerbaikan(): BelongsTo

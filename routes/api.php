@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\UserAuthController;
 use App\Http\Controllers\Api\Auth\AdminAuthController;
 use App\Http\Controllers\KendaraanController;
+use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\PesananPerbaikanController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,10 @@ Route::prefix('user')->group(function () {
         Route::get('pesanan/{id}', [PesananPerbaikanController::class, 'show']);
         Route::post('pesanan/{id}/cancel', [PesananPerbaikanController::class, 'cancelOrder']);
         Route::get('kendaraan/{kendaraanId}/pesanan', [PesananPerbaikanController::class, 'getPerbaikanKendaraan']);
+
+        // Route manajemn pembayaran
+        Route::post('pembayaran/{paymentId}', [PembayaranController::class, 'bayar']);
+        Route::get('pembayaran/{paymentId}', [PembayaranController::class, 'getPaymentsById']);
     });
 });
 
@@ -68,5 +73,7 @@ Route::prefix('admin')->group(function () {
         Route::post('pesanan', [PesananPerbaikanController::class, 'store']);
         Route::put('pesanan/{id}', [PesananPerbaikanController::class, 'update']);
         Route::delete('pesanan/{id}', [PesananPerbaikanController::class, 'destroy']);
+
+        
     });
 });

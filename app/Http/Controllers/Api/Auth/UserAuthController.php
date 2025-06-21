@@ -51,6 +51,8 @@ class UserAuthController extends Controller
 
             $user = User::where('email', $request->email)->first();
 
+            
+
             if (!$user || !Hash::check($request->password, $user->password)) {
                 return $this->errorResponse('Kredensial yang diberikan salah', null, 401);
             }

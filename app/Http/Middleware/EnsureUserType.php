@@ -12,12 +12,8 @@ class EnsureUserType
     {
         $user = $request->user();
 
-        if ($type === 'admin' && !$user instanceof \App\Models\Admin) {
-            return response()->json(['message' => 'Unauthorized. Admin access required.'], 403);
-        }
-
-        if ($type === 'user' && !$user instanceof \App\Models\User) {
-            return response()->json(['message' => 'Unauthorized. User access required.'], 403);
+        if ($type === 'admin' && !$user instanceof \App\Models\User) {
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         return $next($request);

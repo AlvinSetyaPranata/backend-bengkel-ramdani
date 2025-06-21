@@ -15,10 +15,10 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('kendaraan_pelanggan_id'); 
             $table->date('tanggal_masuk');
-            $table->date('tanggal_perbaikan')->nullable();
-            $table->date('tanggal_selesai')->nullable();
+            $table->date('tanggal_perbaikan');
+            $table->date('tanggal_selesai');
             $table->decimal('total_biaya', 12, 2);
-            $table->string('keterangan')->nullable();
+            $table->string('keterangan');
             $table->enum('status', ['menunggu', 'proses', 'selesai', 'batal'])->default('menunggu');
             $table->timestamps();
 

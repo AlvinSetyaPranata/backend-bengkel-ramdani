@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kendaraan;
+use App\Models\Pembayaran;
 use App\Models\Pesanan_Perbaikan;
 use App\Traits\ApiResponse;
+use App\Services\PaymentService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +17,13 @@ use Illuminate\Validation\ValidationException;
 class PesananPerbaikanController extends Controller
 {
     use ApiResponse;
+
+    protected $paymentService;
+
+    public function __construct(PaymentService $payment)
+    {
+        $this->paymentService = $payment;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -93,6 +102,7 @@ class PesananPerbaikanController extends Controller
                 'tanggal_masuk' => 'required|date',
                 'tanggal_perbaikan' => 'nullable|date|after_or_equal:tanggal_masuk',
                 'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_perbaikan',
+                'metode_pembayaran' => 'sometimes|in:cash,transfer',
                 'total_biaya' => 'required|numeric|min:0',
                 'status' => 'sometimes|in:menunggu,proses,selesai,batal',
                 'keterangan' => 'nullable|string|max:1000', 
@@ -110,22 +120,55 @@ class PesananPerbaikanController extends Controller
                     422
                 );
             }
-            
-            $data = $request->all();
-            $data['id'] = Str::uuid();
-            
-            // Set default status jika tidak disediakan
-            if (!isset($data['status'])) {
-                $data['status'] = 'menunggu';
+
+
+            $data = [
+                "kendaraan_pelanggan_id" => $request['kendaraan_pelanggan_id'],
+                "status" => 'menunggu',
+                "tanggal_masuk" => $request["tanggal_masuk"],
+                "tanggal_perbaikan" => $request["tanggal_perbaikan"],
+                "tanggal_selesai" => $request["tanggal_selesai"],
+                "total_biaya" => $request["total_biaya"],
+                "keterangan" => $request["keterangan"],
+            ];
+
+            $pesanan = Pesanan_Perbaikan::create($data);
+            $orderId = $pesanan["id"];
+
+            if ($request["metode_pembayaran"] == "cash") {
+                $snapToken = "";
+            } else {
+                $snapToken = $this->paymentService->initiatePayment([
+                'order_id' => $orderId,
+                'amount' => $data["total_biaya"],
+                'items' => [
+                    [
+                        'id' => 'Jasa Perbaikan',
+                        'price' => $data["total_biaya"],
+                        'quantity' => 1,
+                        'name' => $data["keterangan"],
+                    ],
+                ],
+            ]);
             }
             
-            $pesanan = Pesanan_Perbaikan::create($data);
+
+            $payment = Pembayaran::create([
+                "id" => (string) Str::uuid(),
+                "pesanan_perbaikan_id" => $orderId,
+                "metode_pembayaran" => $request["metode_pembayaran"],
+                "payment_link" => $snapToken,
+                "status_pembayaran" => "Belum Dibayar"
+            ]);
             
             // Tambahkan relasi kendaraan untuk respons
             $pesanan->load('kendaraan:id,nama_kendaraan,plat_nomor');
             
             DB::commit();
-            return $this->successResponse($pesanan, 'Pesanan perbaikan berhasil ditambahkan', 201);
+            return $this->successResponse([
+                "data" => $pesanan,
+                "payment_data" => $payment,
+            ], 'Pesanan perbaikan berhasil ditambahkan', 201);
         } catch(ValidationException $e) {
             DB::rollBack();
             return $this->errorResponse('Validasi gagal', $e->errors(), 422);
@@ -160,8 +203,19 @@ class PesananPerbaikanController extends Controller
                 $endDate = Carbon::parse($pesanan->tanggal_selesai);
                 $pesanan->durasi_perbaikan = $startDate->diffInDays($endDate) . ' hari';
             }
+
+            $pembayaran = Pembayaran::where("pesanan_perbaikan_id", "=", $pesanan["pesanan_perbaikan_id"]);
             
-            return $this->successResponse($pesanan, 'Detail pesanan perbaikan berhasil diambil');
+            return $this->successResponse([
+                "kendaraan_pelanggan_id" => $pesanan["kendaraan_pelanggan_id"],
+                "tanggal_masuk" => $pesanan["tanggal_masuk"],
+                "tanggal_perbaikan" => $pesanan["tanggal_perbaikan"],
+                "tanggal_selesai" => $pesanan["tanggal_selesai"],
+                "total_biaya" => $pesanan["total_biaya"],
+                "status" => $pesanan["status"],
+                "keterangan" => $pesanan["keterangan"],
+                "payment_data" => $pembayaran
+            ], 'Detail pesanan perbaikan berhasil diambil');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $this->errorResponse('Pesanan perbaikan tidak ditemukan', "ID pesanan tidak valid: {$id}", 404);
         } catch (\Exception $e) {
@@ -186,19 +240,21 @@ class PesananPerbaikanController extends Controller
             DB::beginTransaction();
             
             $pesanan = Pesanan_Perbaikan::findOrFail($id);
-            
+
             //Pengguna biasa tidak dapat memperbarui pesanan perbaikan
             if (Auth::guard('sanctum')->user()->tokenable_type === 'App\\Models\\User') {
                 return $this->errorResponse('Pengguna tidak diizinkan untuk mengubah pesanan perbaikan', null, 403);
             }
             
             $request->validate([
-                'tanggal_masuk' => 'sometimes|required|date',
+                'kendaraan_pelanggan_id' => 'required|uuid|exists:kendaraans,id',
+                'tanggal_masuk' => 'required|date',
                 'tanggal_perbaikan' => 'nullable|date|after_or_equal:tanggal_masuk',
                 'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_perbaikan',
-                'total_biaya' => 'sometimes|required|numeric|min:0',
+                'metode_pembayaran' => 'sometimes|in:cash,transfer',
+                'total_biaya' => 'required|numeric|min:0',
                 'status' => 'sometimes|in:menunggu,proses,selesai,batal',
-                'keterangan' => 'nullable|string|max:1000',
+                'keterangan' => 'nullable|string|max:1000', 
             ]);
             
             // Validasi tanggal berdasarkan status
@@ -211,7 +267,42 @@ class PesananPerbaikanController extends Controller
                     $pesanan->tanggal_selesai = Carbon::now()->toDateString();
                 }
             }
+
+            $orderId = $pesanan["id"];
+             $pembayaran = Pembayaran::Where("pesanan_perbaikan_id", "=", $orderId);
+
+             $data = [
+                "kendaraan_pelanggan_id" => $request['kendaraan_pelanggan_id'],
+                "status" => 'menunggu',
+                "tanggal_masuk" => $request["tanggal_masuk"],
+                "tanggal_perbaikan" => $request["tanggal_perbaikan"],
+                "tanggal_selesai" => $request["tanggal_selesai"],
+                "total_biaya" => $request["total_biaya"],
+                "keterangan" => $request["keterangan"],
+            ];
+
+            if ($request["metode_pembayaran"] == "cash") {
+                $snapToken = "";
+            } else {
+                $snapToken = $this->paymentService->initiatePayment([
+                'order_id' => $orderId,
+                'amount' => $data["total_biaya"],
+                'items' => [
+                    [
+                        'id' => 'Jasa Perbaikan',
+                        'price' => $data["total_biaya"],
+                        'quantity' => 1,
+                        'name' => $data["keterangan"],
+                    ],
+                ],
+            ]);
+            }
             
+
+            $pembayaran->update([
+                "metode_pembayaran" => $request["metode_pembayaran"],
+            ]);
+
             $pesanan->update($request->all());
             
             // Reload dengan kendaraan

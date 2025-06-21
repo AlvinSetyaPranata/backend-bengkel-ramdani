@@ -1,0 +1,7 @@
+
+Payment Handler:
+  ✔ Create a column inside payment model and migration to snap link @done(25-06-18 06:07)
+  ✔ Modify controller in add order to specifiy the payment type ( whether is cash or use digital payment) @done(25-06-19 21:48)
+  ☐ If a customer use cash then the qrcode is null and the settlement is done in admin panel
+  ✔ Create option in order detail to choose whenever to pay with cash or digital @done(25-06-19 21:48)
+  ✔ If a customer use digital then the qrcode is automatically generated and the settlement is done in payment gateway provider @done(25-06-19 21:48)

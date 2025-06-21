@@ -47,7 +47,7 @@ class AdminAuthController extends Controller
                 'password' => 'required|string',
             ]);
 
-            $admin = Admin::where('email', $request->email)->first();
+            $admin = User::where('email', $request->email)->first();
 
             if (!$admin || !Hash::check($request->password, $admin->password)) {
                 return $this->errorResponse('Kredensial yang diberikan salah', null, 401);
@@ -112,17 +112,17 @@ class AdminAuthController extends Controller
     public function listUsers()
     {
         try {
-            $users = User::with(['kendaraan','pembayaran'])->paginate(10);
+            $users = User::with(['kendaraan'])->where("role", "=", "user")->paginate(10);
             return $this->paginationResponse($users, 'Daftar pengguna berhasil diambil');
         } catch (\Exception $e) {
-            return $this->errorResponse('Gagal mengambil daftar pengguna', null, 500);
+            return $this->errorResponse($e->getMessage(), null, 500);
         }
     }
 
     public function getUser($id)
     {
         try {
-            $user = User::with(['kendaraan','pembayaran'])->findOrFail($id);
+            $user = User::with(['kendaraan'])->where("role", "=", "user")->findOrFail($id);
             return $this->successResponse($user, 'Data pengguna berhasil diambil');
         } catch (\Exception $e) {
             return $this->errorResponse('Pengguna tidak ditemukan', null, 404);

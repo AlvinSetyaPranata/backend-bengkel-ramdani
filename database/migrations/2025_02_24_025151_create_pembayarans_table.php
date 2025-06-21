@@ -14,15 +14,13 @@ return new class extends Migration
         Schema::create('pembayarans', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('pesanan_perbaikan_id');
-            $table->uuid('user_id');
-            $table->decimal('jumlah_bayar', 10, 2);
-            $table->enum('metode_pembayaran', ['transfer', 'cash', 'credit_card']);
-            $table->enum('status_pembayaran', ['pending', 'lunas', 'gagal'])->default('pending');
+            $table->string('payment_link')->nullable();
+            $table->string('status_pembayaran')->nullable();
+            $table->string('metode_pembayaran');
+            $table->decimal('jumlah_dibayar', 12, 2)->nullable();
             $table->timestamp('tanggal_pembayaran')->nullable();
-            $table->timestamps();
-
             $table->foreign('pesanan_perbaikan_id')->references('id')->on('pesanan__perbaikans')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
