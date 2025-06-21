@@ -74,7 +74,7 @@ class PesananPerbaikanController extends Controller
                 ];
             }, $pesanans->items());
 
-            $response = [
+            $responseData = [
                 'status' => 'sukses',
                 'pesan' => "Daftar pesanan perbaikan berhasil diambil",
                 'data' => $order_list,
@@ -102,10 +102,10 @@ class PesananPerbaikanController extends Controller
                         ->sum('total_biaya')
                 ];
 
-                return $this->successResponse($response, 'Daftar pesanan perbaikan berhasil diambil', $stats);
+                return response()->json($responseData);
             }
 
-            return $this->successResponse($response, 'Daftar pesanan perbaikan berhasil diambil');
+            return response()->json($responseData);
         } catch (\Exception $e) {
             return $this->errorResponse('Gagal mengambil daftar pesanan perbaikan', $e->getMessage(), 500);
         }
