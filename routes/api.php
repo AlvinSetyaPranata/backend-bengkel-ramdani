@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\UserAuthController;
 use App\Http\Controllers\Api\Auth\AdminAuthController;
 use App\Http\Controllers\KendaraanController;
+use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\PesananPerbaikanController;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,9 @@ Route::prefix('user')->group(function () {
         // Route manajemn pembayaran
         Route::post('pembayaran/{paymentId}', [PembayaranController::class, 'bayar']);
         Route::get('pembayaran/{paymentId}', [PembayaranController::class, 'getPaymentsById']);
+
+
+        Route::get('midtrans/callback', [MidtransController::class, "NotificationCallback"]);
     });
 });
 
