@@ -9,6 +9,9 @@ use App\Http\Controllers\PesananPerbaikanController;
 use Illuminate\Support\Facades\Route;
 
 
+
+ Route::post('midtrans/callback', [MidtransController::class, "NotificationCallback"]);
+
 Route::prefix('user')->group(function () {
     Route::post('register', [UserAuthController::class, 'register']);
     Route::post('login', [UserAuthController::class, 'login']);
@@ -32,8 +35,6 @@ Route::prefix('user')->group(function () {
         Route::post('pembayaran/{paymentId}', [PembayaranController::class, 'bayar']);
         Route::get('pembayaran/{paymentId}', [PembayaranController::class, 'getPaymentsById']);
 
-
-        Route::post('midtrans/callback', [MidtransController::class, "NotificationCallback"]);
     });
 });
 
