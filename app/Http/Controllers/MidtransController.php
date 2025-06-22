@@ -9,17 +9,17 @@ use App\Models\Pembayaran;
 class MidtransController extends Controller
 {
     public function NotificationCallback(Request $request) {
-        $notification = new Notification();
-
-         $transaction = $notification->transaction_status;
-         $order_id = $notification->order_id;
+        
+         $transaction = $request->transaction_status;
+         $order_id = $request->order_id;
         //  $type = $notification->payment_type;
         // $fraud = $notification->fraud_status;
 
 
-        $payment = Pembayaran::where("pesanan_perbaikan_id", "=", $order_id);
+        $payment = Pembayaran::where("pesanan_perbaikan_id", "=", $order_id)->first();
 
-        if ($payment) {
+
+        if (!$payment) {
             return response()->json(["messege" => "Order not found!"]);
         }
 
