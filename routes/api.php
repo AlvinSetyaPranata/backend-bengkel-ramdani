@@ -33,7 +33,7 @@ Route::prefix('user')->group(function () {
         Route::get('pembayaran/{paymentId}', [PembayaranController::class, 'getPaymentsById']);
 
 
-        Route::get('midtrans/callback', [MidtransController::class, "NotificationCallback"]);
+        Route::post('midtrans/callback', [MidtransController::class, "NotificationCallback"]);
     });
 });
 
