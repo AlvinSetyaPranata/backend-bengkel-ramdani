@@ -85,7 +85,8 @@ class PesananPerbaikanController extends Controller
                     'status' => $order["status"],
                     'keterangan' => $order["keterangan"],
                     "metode_pembayaran" => $payment_data->metode_pembayaran,
-                    "token_pembayaran" => $payment_data->payment_link
+                    "token_pembayaran" => $payment_data->payment_link,
+                    "status_pembayaran" => $payment_data->status_pembayaran
                 ];
             }, $pesanans->items());
 
@@ -476,7 +477,8 @@ class PesananPerbaikanController extends Controller
                     'status' => $order["status"],
                     'keterangan' => $order["keterangan"],
                     "metode_pembayaran" => $payment_data->metode_pembayaran,
-                    "token_pembayaran" => $payment_data->payment_link
+                    "token_pembayaran" => $payment_data->payment_link,
+                    "status_pembayaran" => $payment_data->status_pembayaran
                 ];
             }, $pesanans->items());
 
