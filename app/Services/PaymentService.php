@@ -29,24 +29,4 @@ class PaymentService
             throw new Exception("Failed to initiate payment.");
         }
     }
-
-    /**
-     * Verifies a payment status by order ID
-     */
-    public function verifyPayment(string $orderId): array
-    {
-        try {
-            $status = Transaction::status($orderId);
-            return [
-                'transaction_status' => $status->transaction_status,
-                'payment_type' => $status->payment_type,
-                'fraud_status' => $status->fraud_status ?? null,
-                'status_code' => $status->status_code,
-                'status_message' => $status->status_message,
-            ];
-        } catch (Exception $e) {
-            Log::error("Midtrans verification error: " . $e->getMessage());
-            throw new Exception("Failed to verify payment.");
-        }
-    }
 }
