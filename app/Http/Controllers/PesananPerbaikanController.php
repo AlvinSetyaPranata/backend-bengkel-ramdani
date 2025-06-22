@@ -260,7 +260,8 @@ class PesananPerbaikanController extends Controller
                 "status" => $pesanan["status"],
                 "keterangan" => $pesanan["keterangan"],
                 "metode_pembayaran" => $pembayaran["metode_pembayaran"],
-                "token_pembayaran" => $pembayaran["payment_link"]
+                "token_pembayaran" => $pembayaran["payment_link"],
+                "status_pembayaran" => $pembayaran["status_pembayaran"]
             ], 'Detail pesanan perbaikan berhasil diambil');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $this->errorResponse('Pesanan perbaikan tidak ditemukan', "ID pesanan tidak valid: {$id}", 404);
