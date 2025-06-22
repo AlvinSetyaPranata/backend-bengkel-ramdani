@@ -556,6 +556,7 @@ class PesananPerbaikanController extends Controller
                     'total_biaya' => $order["total_biaya"],
                     'status' => $order["status"],
                     'keterangan' => $order["keterangan"],
+                    "status_pembayaran" => $payment_data->status_pembayaran,
                     "metode_pembayaran" => $payment_data->metode_pembayaran,
                     "token_pembayaran" => $payment_data->payment_link
                 ];
