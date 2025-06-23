@@ -1,16 +1,29 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { SCREEN_WIDTH } from "@/utils/constans";
-import { useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import Detail from "@/components/Molecules/Detail";
 import { clampString, formatCurrency } from "@/utils/strings";
 import { console_dev } from "@/utils/development";
+import RefreshLayout from "@/components/Molecules/RefreshLayout";
+import WebView from "react-native-webview";
+
+
+
 
 export default function historyDetail() {
   const { instance } = useLocalSearchParams();
+  const router = useRouter()
 
   const [data, setData] = useState<Record<string, string>>();
+
+  const handlePayment = () => {
+      router.push({
+        pathname: "/midtrans",
+        params: { token: data?.token_pembayaran }
+      })
+  }
 
   useEffect(() => {
     if (instance) {
@@ -18,99 +31,97 @@ export default function historyDetail() {
     }
   }, []);
 
-  // useEffect(() => console_dev(data.kendaraan.plat_nomor), [data])
+  // useEffect(() => console_dev(data), [data])
 
   return (
     <Detail title="Nota Pembayaran">
-      <View style={styles.header}>
-        <View
-          style={{
-            borderRadius: "100%",
-            padding: 20,
-            backgroundColor: "green",
-          }}
-        >
-          <MaterialIcons name="check" size={28} color="white" />
-        </View>
-
-        <Text
-          style={{
-            fontSize: 14,
-            fontWeight: "500",
-            marginTop: 20,
-            color: "#636363",
-          }}
-        >
-          {data?.status ?? "Tidak diketauhii"}
-        </Text>
-        <Text
-          style={{
-            fontSize: 24,
-            fontWeight: "bold",
-            marginTop: 6,
-            color: "black",
-          }}
-        >
-          {formatCurrency(data?.total_biaya ?? "0")}
-        </Text>
-      </View>
-
-      <View style={styles.contentContainer}>
-        <View style={styles.detailWrapper}>
-          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
-            ID Pesanan
-          </Text>
-          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
-            {clampString(data?.id ?? "-")}
-          </Text>
-        </View>
-        <View style={styles.detailWrapper}>
-          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
-            Nama Kendaraan
-          </Text>
-          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
-            {(data?.kendaraan as unknown as { nama_kendaraan: string })
-              ?.nama_kendaraan ?? ""}
-          </Text>
-        </View>
-        <View style={styles.detailWrapper}>
-          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
-            Plat Nomor
-          </Text>
-          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
-            {data ? (data?.kendaraan as unknown as { plat_nomor: string }).plat_nomor : ""}
-          </Text>
-        </View>
-        <View style={styles.detailWrapper}>
-          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
-            Tanggal Masuk
-          </Text>
-          <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
-            {data?.tanggal_masuk ?? ""}
-          </Text>
-        </View>
-      </View>
-
-      {/* <View
-        style={{
-          width: SCREEN_WIDTH,
-          justifyContent: "center",
-          alignItems: "center",
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          paddingVertical: 10,
-        }}
-      >
-        <Pressable style={styles.download}>
-          <MaterialIcons name="download" color="white" size={20} />
-          <Text
-            style={{ textAlign: "center", color: "white", fontWeight: 500 }}
+      <RefreshLayout>
+        <View style={styles.header}>
+          <View
+            style={{
+              borderRadius: "100%",
+              padding: 20,
+              backgroundColor: data?.status_pembayaran == "Lunas" ? "green" : "red",
+            }}
           >
-            Download Struk
+            <MaterialIcons name={data?.status_pembayaran == "Lunas" ? "check" : "close"} size={28} color="white" />
+          </View>
+
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: "500",
+              marginTop: 20,
+              color: "#636363",
+            }}
+          >
+            {data?.status_pembayaran ?? "Tidak diketauhii"}
           </Text>
-        </Pressable>
-      </View> */}
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: "bold",
+              marginTop: 6,
+              color: "black",
+            }}
+          >
+            {formatCurrency(data?.total_biaya ?? "0")}
+          </Text>
+        </View>
+
+        <View style={styles.contentContainer}>
+          <View style={styles.detailWrapper}>
+            <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
+              ID Pesanan
+            </Text>
+            <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
+              {clampString(data?.id ?? "-")}
+            </Text>
+          </View>
+          <View style={styles.detailWrapper}>
+            <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
+              Nama Kendaraan
+            </Text>
+            <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
+              {(data?.kendaraan as unknown as { nama_kendaraan: string })
+                ?.nama_kendaraan ?? ""}
+            </Text>
+          </View>
+          <View style={styles.detailWrapper}>
+            <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
+              Plat Nomor
+            </Text>
+            <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
+              {data
+                ? (data?.kendaraan as unknown as { plat_nomor: string })
+                    .plat_nomor
+                : ""}
+            </Text>
+          </View>
+          <View style={styles.detailWrapper}>
+            <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
+              Tanggal Masuk
+            </Text>
+            <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
+              {data?.tanggal_masuk ?? ""}
+            </Text>
+          </View>
+          <View style={styles.detailWrapper}>
+            <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
+              Metode Pembayaran
+            </Text>
+            <Text style={{ fontSize: 14, marginTop: 6, color: "black" }}>
+              {data?.metode_pembayaran ?? ""}
+            </Text>
+          </View>
+
+          {data?.status_pembayaran == "Belum Dibayar" && 
+          <Pressable onPress={handlePayment} style={{ width: "100%", backgroundColor: "black", borderRadius: 10, paddingVertical: 10, marginTop: 50}}>
+            <Text style={{color: "white", fontWeight: "500", textAlign: "center"}}>Bayar Sekarang</Text>
+          </Pressable>
+          }
+        </View>
+      </RefreshLayout>
     </Detail>
   );
 }

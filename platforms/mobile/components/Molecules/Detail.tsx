@@ -14,6 +14,8 @@ interface propsType extends  PropsWithChildren {
 export default function Detail({ title, children, fallback_screen="/", force_redirect_to="" }: propsType) {
   const router = useRouter();
 
+
+
   const getUrl = () => {
     if (force_redirect_to != "" || force_redirect_to) {
       router.navigate(force_redirect_to)
@@ -27,6 +29,7 @@ export default function Detail({ title, children, fallback_screen="/", force_red
     }
   }
 
+  
   return (
     <View
       style={styles.container}

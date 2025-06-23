@@ -1,5 +1,5 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native'
+import React, { useCallback, useState } from 'react'
 import { useReactTable, ColumnDef, getCoreRowModel, flexRender } from '@tanstack/react-table'
 
 
@@ -16,6 +16,15 @@ export default function Datatable<T>({ columns, data } : propsType<T>) {
         columns: columns,
         getCoreRowModel: getCoreRowModel(),
     })
+
+
+    const [isRefreshing, setIsRefreshing] = useState(false)
+
+    const refreshHandler = useCallback(() => {
+      setIsRefreshing(true)
+
+      setTimeout(() => setIsRefreshing(false), 1000)
+    }, [])
 
   return (
     <View style={styles.container}>
@@ -34,6 +43,7 @@ export default function Datatable<T>({ columns, data } : propsType<T>) {
       <FlatList
         data={table.getRowModel().rows}
         keyExtractor={(row) => row.id}
+        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refreshHandler}  />}
         ListEmptyComponent={
           <Text style={{ textAlign: 'center'}}>Anda belum membuat pesanan</Text>
         }

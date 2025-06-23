@@ -56,6 +56,7 @@ export default function HomeScreen() {
       // console.log(res)
 
       const data = await res.json();
+      console.log(data.data.length)
       setData(data.data);
     };
 
@@ -124,13 +125,13 @@ const styles = StyleSheet.create({
   container: {
     minHeight: SCREEN_HEIGHT,
     flex: 1,
+    backgroundColor: "white"
   },
   header: {
     width: "100%",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: 'black'
   },
 
   logo: {

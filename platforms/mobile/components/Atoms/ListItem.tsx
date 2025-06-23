@@ -1,6 +1,5 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { Href, useNavigation, useRouter } from "expo-router";
-import { useEffect } from "react";
+import { Href, useRouter } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 
 const ListItem = ({
