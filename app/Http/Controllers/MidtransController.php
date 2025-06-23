@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Midtrans\Notification;
 use App\Models\Pembayaran;
 
 class MidtransController extends Controller
