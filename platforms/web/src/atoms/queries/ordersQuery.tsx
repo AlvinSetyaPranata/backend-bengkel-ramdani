@@ -33,7 +33,7 @@ export const ordersQueryAtom = atomWithQuery((get) => {
         (res) => {
 
           if (res.status == 401) {
-            return [];
+            return [false];
           }
 
           return res.json();

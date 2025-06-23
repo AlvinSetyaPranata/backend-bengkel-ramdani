@@ -13,6 +13,8 @@ import { useEffect } from "react";
 import { formatCurrency, formatTime } from "../../utils/converter";
 import StatisticsChart from "../../components/ecommerce/StatisticsChart";
 import { DEFAULT_STATISTICS_TRENDS_DATA } from "../../constants/StatisticsConstants";
+import { tokenAtom } from "../../atoms/auth";
+import { useNavigate } from "react-router";
 
 export default function Home() {
   const [{ data: userdata, isPending: usersIsPending }] =
@@ -25,11 +27,29 @@ export default function Home() {
   const [{ data: statisticData, isPending: statisticIsPending }] =
     useAtom(statisticQueryAtom);
 
-  // useEffect(() => {
-  //   if (statisticData) {
-  //     console.log(statisticData.data.keuangan.pendapata_total)
-  //   }
-  // }, [statisticData, statisticIsPending])
+  const navigate = useNavigate()
+  const [token,]  = useAtom(tokenAtom)
+
+
+  useEffect(() => {
+    const verifyToken = async() => {
+      
+      if (!token) return
+
+      await fetch(`${import.meta.env.VITE_BASE_API_URL}/pesanan`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      .then(res => {
+          if (res.status == 401) {
+            navigate("/signin")
+          }
+        })
+    }
+
+    verifyToken()
+  }, [token])
 
   return (
     <>
@@ -38,7 +58,8 @@ export default function Home() {
         <div className="col-span-12 gap-y-6 gap-x-4 xl:col-span-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           <MetricCard
             title="Total Pengguna"
-            data={userdata ? userdata.data.length : ""}
+            data={(userdata && userdata.data) ? userdata.data.length : ""}
+            // data={JSON.stringify(userdata)}
             isPending={usersIsPending}
             icon={
               <GroupIcon className="text-gray-800 size-6 dark:text-white/90" />

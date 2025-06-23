@@ -53,23 +53,42 @@ const Input: FC<InputProps> = ({
   const onChange = (event: ChangeEvent<HTMLInputElement>) =>
     setValue(event.target.value);
 
-  useEffect(() => setValue(defaultValue ? defaultValue : ""), [defaultValue]);
+
+  const unFocusOnBlur = () => setTimeout(() => setSearchOpened(false), 300)
+
+useEffect(() => {
+
+  if (!searchData && defaultValue) {
+    setValue(defaultValue)
+    return
+  }
+
+  if (!searchData || !defaultValue) return;
+
+  const selected = searchData.filter(data => data.name === defaultValue);
+
+  if (selected.length === 0) return;
+
+  setValue(selected[0].name);
+  setSelected(selected[0]);
+}, [defaultValue, searchData]);
+
 
   useEffect(() => setSearchOpened(value ? true : false), [value]);
+
 
   return (
     <div className="relative">
       {searchData && 
-      <input type="hidden" value={selected.value} name={name} />
-      
-      }
+      <input type="hidden" value={selected.value} name={name} />}
       <input
         type={type}
         id={id}
-        name={searchData ? "" : name}
         placeholder={placeholder}
         value={value}
+        name={searchData ? "" : name}
         onChange={onChange}
+        onBlur={unFocusOnBlur}
         min={min}
         max={max}
         step={step}

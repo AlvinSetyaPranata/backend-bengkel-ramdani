@@ -8,7 +8,7 @@ import Button from "../components/ui/button/Button";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faX } from "@fortawesome/free-solid-svg-icons";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import {
   ModalWithForm,
   ModalWithConfirmation,
@@ -52,12 +52,13 @@ export default function Orders() {
   const [{mutate: updateOrder}] = useAtom(updateOrderMutationAtom);
   const [{mutate: deleteOrder}] = useAtom(deleteOrderMutationAtom);
 
-  const [selectedInstance, setSelectedInstance] = useState({});
+  const [selectedInstance, setSelectedInstance] = useState(null);
 
   const token = useAtomValue(tokenAtom)
 
   const handleActionPress = (type, instance) => {
     setModalType(type);
+    console.log(instance)
     setSelectedInstance(instance);
   };
 
@@ -217,6 +218,7 @@ export default function Orders() {
     setIconActive(false);
   };
 
+  // useEffect(() => console.log(selectedInstance), [selectedInstance])
   
 
   return (
@@ -249,6 +251,7 @@ export default function Orders() {
       >
         <div>
           <Label>Kendaraan</Label>
+          {/* {JSON.stringify(selectedInstance)} */}
           <div className="relative">
             <Input name="kendaraan_pelanggan_id" searchData={vehicleQuery
                   ? vehicleQuery.data.map((vehicle) => {
@@ -257,7 +260,7 @@ export default function Orders() {
                         value: vehicle.id,
                       };
                     })
-                  : []} />
+                  : []} defaultValue={(selectedInstance && selectedInstance.kendaraan.user) ? `${selectedInstance.kendaraan.nama_kendaraan} - ${selectedInstance.kendaraan.plat_nomor} - ${selectedInstance.kendaraan.user.name}` : ""}/>
           </div>
         </div>
         <div>
@@ -315,6 +318,24 @@ export default function Orders() {
               defaultValue={
                 modalType == "update" && selectedInstance
                   ? selectedInstance.total_biaya
+                  : ""
+              }
+            />
+          </div>
+        </div>
+        <div>
+          <Label>Metode Pembayaran</Label>
+          <div className="relative">
+            <Select
+              name="metode_pembayaran"
+              options={[
+                { label: "Cash", value: "cash" },
+                { label: "Transfer / E-Wallet / Qris", value: "transfer" },
+              ]}
+              placeholder="Pilih Metode Pembayaran"
+              defaultValue={
+                modalType == "update" && selectedInstance
+                  ? selectedInstance.metode_pembayaran
                   : ""
               }
             />
