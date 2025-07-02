@@ -71,6 +71,8 @@ const updateOrderMutationAtom = atomWithMutation((get) => {
         },
       });
 
+      console.log(response)
+
       if (!response.ok) {
         throw new Error("Failed to create order");
       }

@@ -18,7 +18,7 @@ export default function MidtransView() {
 
   return (
     <View style={{flex: 1}}>
-      <WebView source={{ uri: `${process.env.EXPO_PUBLIC_MIDTRANS_URL}/${token}`}} style={{ flex: 1}} />
+      <WebView source={{ uri: `${process.env.EXPO_PUBLIC_MIDTRANS_URL}/${token}#/bank-transfer`}} style={{ flex: 1}} />
     </View>
   )
 }
